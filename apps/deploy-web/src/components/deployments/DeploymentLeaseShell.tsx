@@ -136,7 +136,7 @@ export const DeploymentLeaseShell: React.FunctionComponent<Props> = ({ leases })
         if (!isConnectionEstablishedRef.current) {
           // Welcome message
           terminalRef.current?.reset();
-          terminalRef.current?.write("Welcome to Akash Console Shell! ☁️");
+          terminalRef.current?.write("Welcome to Console Air Shell! ☁️");
           terminalRef.current?.write("\n\r");
           terminalRef.current?.write("You're now connected just as ssh to your docker instance.");
           terminalRef.current?.write("\n\r");

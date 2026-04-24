@@ -15,7 +15,8 @@ services:
       - port: 3001
         as: 80
         accept:
-          - console.akash.network
+          # Replace with the hostname you intend to serve this instance from
+          - console-air.example.com
         to:
           - global: true
   proxy:
@@ -24,7 +25,8 @@ services:
       - port: 3040
         as: 80
         accept:
-          - console-provider-proxy.akash.network
+          # Replace with the hostname you intend to serve the provider proxy from
+          - console-air-provider-proxy.example.com
         to:
           - global: true
 profiles:

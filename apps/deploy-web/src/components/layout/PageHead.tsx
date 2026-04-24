@@ -3,6 +3,8 @@ import Head from "next/head";
 import { DefaultSeo, NextSeo } from "next-seo";
 import type { NextSeoProps } from "next-seo/lib/types";
 
+import { domainName } from "@src/utils/urlUtils";
+
 export const PageHead: React.FunctionComponent<{ pageSeo?: NextSeoProps }> = ({ pageSeo }) => {
   return (
     <>
@@ -13,28 +15,15 @@ export const PageHead: React.FunctionComponent<{ pageSeo?: NextSeoProps }> = ({ 
       </Head>
 
       <DefaultSeo
-        titleTemplate="%s | Akash Console"
-        defaultTitle="Akash Console"
-        description="Akash Console is the #1 platform to deploy docker containers on the Akash Network, a decentralized super cloud compute marketplace. Explore, deploy and track all in one place!"
+        titleTemplate="%s | Console Air"
+        defaultTitle="Console Air"
+        description="Console Air is a self-custody crypto wallet UI for deploying docker containers on the Akash Network, a decentralized cloud compute marketplace. Explore, deploy and track all in one place!"
         openGraph={{
           type: "website",
           locale: "en_US",
-          url: "https://console.akash.network/",
-          site_name: "Akash Console",
-          description: "Deploy docker containers on the decentralized supercloud Akash Network.",
-          images: [
-            {
-              url: "https://console.akash.network/akash-console.png",
-              width: 1200,
-              height: 630,
-              alt: "AkashConsole Cover Image"
-            }
-          ]
-        }}
-        twitter={{
-          handle: "@akashnet",
-          site: "@akashnet",
-          cardType: "summary_large_image"
+          url: `${domainName}/`,
+          site_name: "Console Air",
+          description: "Deploy docker containers on the decentralized supercloud Akash Network."
         }}
       />
 

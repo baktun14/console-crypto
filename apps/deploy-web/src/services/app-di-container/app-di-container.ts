@@ -81,7 +81,7 @@ export const createAppRootContainer = (config: ServicesConfig) => {
         "Content-Type": "application/json"
       };
       if (config.runtimeEnv === "nodejs") {
-        headers["User-Agent"] = "AkashConsole/1.0 (https://console.akash.network)";
+        headers["User-Agent"] = `ConsoleAir/1.0 (${browserEnvConfig.NEXT_PUBLIC_APP_URL})`;
       }
 
       return container.createAxios({

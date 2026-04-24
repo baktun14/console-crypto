@@ -9,7 +9,7 @@ import { domainName, UrlService } from "@src/utils/urlUtils";
 export function TermsOfService() {
   return (
     <Layout>
-      <CustomNextSeo title="Terms of service" url={`${domainName}${UrlService.termsOfService()}`} description="Akash Console webiste terms of service." />
+      <CustomNextSeo title="Terms of service" url={`${domainName}${UrlService.termsOfService()}`} description="Console Air website terms of service." />
 
       <div className="mx-auto max-w-4xl p-8 leading-relaxed">
         <Title>Akash Network Terms of Service</Title>
@@ -18,7 +18,7 @@ export function TermsOfService() {
         <p className="mb-4">
           These Akash Network Terms of Service (these &quot;Terms&quot; or this &quot;Agreement&quot;) are a contract between you and Overclock Labs Inc.
           (&quot;Akash,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) and govern your access to and use of the website located at
-          https://akash.network (the &quot;Website&quot;) and the application interface located at https://console.akash.network/ and all related components
+          https://akash.network (the &quot;Website&quot;) and the application interface located at {domainName}/ and all related components
           (the &quot;Platform&quot;), services provided by Akash described below, and such other services, software, applications, features, or products
           provided by Akash from time to time (together with the Platform, the &quot;Services&quot;).
         </p>

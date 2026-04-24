@@ -14,7 +14,7 @@ export const WelcomePanel: React.FC = () => {
   return (
     <Collapsible open={expanded} onOpenChange={setExpanded}>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-3xl font-semibold">Welcome to Akash Console!</h2>
+        <h2 className="text-3xl font-semibold">Welcome to Console Air!</h2>
         <CollapsibleTrigger asChild>
           <Button size="icon" variant="ghost" className="!m-0 rounded-full" onClick={() => setExpanded(prev => !prev)}>
             <NavArrowDown fontSize="1rem" className={cn("transition-all duration-100", { ["rotate-180"]: expanded })} />
@@ -35,9 +35,9 @@ export const WelcomePanel: React.FC = () => {
 
                 <div className="flex flex-col">
                   <Link href="https://akash.network/docs/getting-started/quickstart-guides/akash-console/" className="font-semibold">
-                    Getting started with Akash Console
+                    Getting started with Console Air
                   </Link>
-                  <span className="text-sm text-muted-foreground">Learn how to deploy your first docker container on Akash in a few clicks using Console.</span>
+                  <span className="text-sm text-muted-foreground">Learn how to deploy your first docker container on Akash in a few clicks using Console Air.</span>
                 </div>
               </li>
 

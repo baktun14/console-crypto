@@ -16,11 +16,11 @@ export const Footer: React.FunctionComponent<IFooterProps> = () => {
         <div className="mb-4 grid grid-cols-1 gap-4">
           <div>
             <Title subTitle className="mb-2 tracking-tight">
-              Akash Console
+              Console Air
             </Title>
             <p className="text-sm font-light">
-              Akash Console is the #1 platform to deploy docker containers on the Akash Network, a decentralized cloud compute marketplace. Explore, deploy and
-              track all in one place!
+              Console Air is a self-custody crypto wallet UI for deploying docker containers on the Akash Network, a decentralized cloud compute marketplace.
+              Explore, deploy and track all in one place!
             </p>
           </div>
         </div>

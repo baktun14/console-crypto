@@ -1,7 +1,7 @@
 {
-  "name": "Akash Console",
-  "short_name": "Akash Console",
-  "description": "Akash Console - The Akash Network official console.",
+  "name": "Console Air",
+  "short_name": "Console Air",
+  "description": "Console Air - Self-custody crypto wallet UI for the Akash Network.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
