@@ -38,10 +38,6 @@ export const CustodialWalletPopup: React.FC<CustodialWalletPopupProps> = ({ wall
   const router = d.useRouter();
   const isACTSupported = d.useSupportsACT();
 
-  const onAuthorizeSpendingClick = () => {
-    router.push(UrlService.settingsAuthorizations());
-  };
-
   return (
     <div className="w-[300px] p-2">
       <div className="mb-4">
@@ -88,15 +84,10 @@ export const CustodialWalletPopup: React.FC<CustodialWalletPopupProps> = ({ wall
       <div className="text-xs text-muted-foreground">Wallet Actions</div>
 
       <div className="flex flex-col items-center justify-end space-y-2 pt-2">
-        {isACTSupported ? (
+        {isACTSupported && (
           <d.Button onClick={() => router.push(UrlService.mintBurn())} variant="outline" className="w-full space-x-2">
             <d.Bank />
             <span>Mint ACT</span>
-          </d.Button>
-        ) : (
-          <d.Button onClick={() => onAuthorizeSpendingClick()} variant="outline" className="w-full space-x-2">
-            <d.Bank />
-            <span>Authorize Spending</span>
           </d.Button>
         )}
 

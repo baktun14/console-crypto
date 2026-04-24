@@ -43,7 +43,6 @@ import type { SendManifestToProviderOptions } from "@src/services/provider-proxy
 import type { BidDto } from "@src/types/deployment";
 import { RouteStep } from "@src/types/route-steps.type";
 import { deploymentData } from "@src/utils/deploymentData";
-import { addScriptToHead } from "@src/utils/domUtils";
 import { TransactionMessageData } from "@src/utils/TransactionMessageData";
 import { domainName, UrlService } from "@src/utils/urlUtils";
 import { CustomDropdownLinkItem } from "../../shared/CustomDropdownLinkItem";
@@ -106,7 +105,7 @@ const WARNING_NUM_OF_BID_REQUESTS = Math.round((60 * 1000) / REFRESH_BIDS_INTERV
 
 export const CreateLease: React.FunctionComponent<Props> = ({ dseq, dependencies: d = DEPENDENCIES }) => {
   const { settings } = d.useSettings();
-  const { providerProxy, analyticsService, errorHandler, urlService, deploymentLocalStorage, publicConfig } = d.useServices();
+  const { providerProxy, analyticsService, errorHandler, urlService, deploymentLocalStorage } = d.useServices();
 
   const [isSendingManifest, setIsSendingManifest] = useState(false);
   const [isFilteringFavorites, setIsFilteringFavorites] = useState(false);
@@ -221,16 +220,6 @@ export const CreateLease: React.FunctionComponent<Props> = ({ dseq, dependencies
           }
           await providerProxy.sendManifest(provider, mani, options);
         }
-
-        // Ad tracking script
-        publicConfig.NEXT_PUBLIC_TRACKING_ENABLED &&
-          publicConfig.NEXT_PUBLIC_GROWTH_CHANNEL_TRACKING_ENABLED &&
-          addScriptToHead({
-            src: "https://pxl.growth-channel.net/s/76250b26-c260-4776-874b-471ed290230d",
-            async: true,
-            defer: true,
-            id: "growth-channel-script-lease"
-          });
 
         router.replace(UrlService.deploymentDetails(dseq, "EVENTS", "events"));
       } catch (error) {

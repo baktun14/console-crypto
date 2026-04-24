@@ -93,18 +93,7 @@ export const createAppRootContainer = (config: ServicesConfig) => {
       (options?: HttpClientOptions): AxiosInstance =>
         createHttpClient(options),
     certificateManager: () => certificateManager,
-    analyticsService: () =>
-      new AnalyticsService({
-        amplitude: {
-          enabled: container.publicConfig.NEXT_PUBLIC_AMPLITUDE_ENABLED,
-          apiKey: container.publicConfig.NEXT_PUBLIC_AMPLITUDE_API_KEY,
-          serverUrl: container.publicConfig.NEXT_PUBLIC_AMPLITUDE_PROXY_URL
-        },
-        ga: {
-          measurementId: container.publicConfig.NEXT_PUBLIC_GA_MEASUREMENT_ID,
-          enabled: container.publicConfig.NEXT_PUBLIC_GA_ENABLED
-        }
-      }),
+    analyticsService: () => new AnalyticsService(),
     apiUrlService: config.apiUrlService,
     queryClient: () =>
       new QueryClient({

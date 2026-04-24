@@ -10,8 +10,7 @@ import { UrlService } from "@src/utils/urlUtils";
 import { Title } from "../shared/Title";
 
 export enum SettingsTabs {
-  GENERAL = "GENERAL",
-  AUTHORIZATIONS = "AUTHORIZATIONS"
+  GENERAL = "GENERAL"
 }
 
 type Props = {
@@ -27,9 +26,6 @@ export const SettingsLayout: React.FunctionComponent<Props> = ({ children, page,
 
   const handleTabChange = (newValue: string) => {
     switch (newValue as SettingsTabs) {
-      case SettingsTabs.AUTHORIZATIONS:
-        router.push(UrlService.settingsAuthorizations());
-        break;
       case SettingsTabs.GENERAL:
       default:
         router.push(UrlService.settings());
@@ -42,9 +38,6 @@ export const SettingsLayout: React.FunctionComponent<Props> = ({ children, page,
       <TabsList className="grid w-full grid-cols-6">
         <TabsTrigger value={SettingsTabs.GENERAL} className={cn({ ["font-bold"]: page === SettingsTabs.GENERAL })}>
           General
-        </TabsTrigger>
-        <TabsTrigger value={SettingsTabs.AUTHORIZATIONS} className={cn({ ["font-bold"]: page === SettingsTabs.AUTHORIZATIONS })}>
-          Authorizations
         </TabsTrigger>
       </TabsList>
 
