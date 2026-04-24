@@ -68,7 +68,6 @@ type Props = {
   setValue: UseFormSetValue<SdlBuilderFormValuesType>;
   gpuModels: GpuVendor[] | undefined;
   hasSecretOption?: boolean;
-  isGitProviderTemplate?: boolean;
 };
 
 export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
@@ -81,8 +80,7 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
   setServiceCollapsed,
   setValue,
   gpuModels,
-  hasSecretOption,
-  isGitProviderTemplate
+  hasSecretOption
 }) => {
   const [isEditingCommands, setIsEditingCommands] = useState<number | boolean | null>(null);
   const [isEditingEnv, setIsEditingEnv] = useState<number | boolean | null>(null);
@@ -157,48 +155,38 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
               placement={currentService.placement}
             />
           )}
-          <div
-            className={cn(
-              "flex justify-between p-4",
-              { ["border-b border-muted-foreground/20"]: expanded },
-              isGitProviderTemplate ? "items-center" : "items-end"
-            )}
-          >
-            {isGitProviderTemplate ? (
-              <h1 className="font-semibold">Build Server Specs</h1>
-            ) : (
-              <FormField
-                control={control}
-                name={`services.${serviceIndex}.title`}
-                render={({ field }) => (
-                  <FormInput
-                    type="text"
-                    label={
-                      <div className="inline-flex items-center">
-                        Service Name
-                        <CustomTooltip
-                          title={
-                            <>
-                              The service name serves as a identifier for the workload to be ran on the Akash Network.
-                              <br />
-                              <br />
-                              <a href="https://akash.network/docs/getting-started/stack-definition-language/#services" target="_blank" rel="noopener">
-                                View official documentation.
-                              </a>
-                            </>
-                          }
-                        >
-                          <InfoCircle className="ml-2 text-xs text-muted-foreground" />
-                        </CustomTooltip>
-                      </div>
-                    }
-                    value={field.value}
-                    className="flex-grow"
-                    onChange={event => field.onChange((event.target.value || "").toLowerCase())}
-                  />
-                )}
-              />
-            )}
+          <div className={cn("flex items-end justify-between p-4", { ["border-b border-muted-foreground/20"]: expanded })}>
+            <FormField
+              control={control}
+              name={`services.${serviceIndex}.title`}
+              render={({ field }) => (
+                <FormInput
+                  type="text"
+                  label={
+                    <div className="inline-flex items-center">
+                      Service Name
+                      <CustomTooltip
+                        title={
+                          <>
+                            The service name serves as a identifier for the workload to be ran on the Akash Network.
+                            <br />
+                            <br />
+                            <a href="https://akash.network/docs/getting-started/stack-definition-language/#services" target="_blank" rel="noopener">
+                              View official documentation.
+                            </a>
+                          </>
+                        }
+                      >
+                        <InfoCircle className="ml-2 text-xs text-muted-foreground" />
+                      </CustomTooltip>
+                    </div>
+                  }
+                  value={field.value}
+                  className="flex-grow"
+                  onChange={event => field.onChange((event.target.value || "").toLowerCase())}
+                />
+              )}
+            />
             <div className="ml-4 flex items-center">
               {!expanded && isDesktop && (
                 <div className="flex items-center whitespace-nowrap">
@@ -229,65 +217,64 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <div className="grid gap-4">
-                    {!isGitProviderTemplate &&
-                      (imageList?.length ? (
-                        <div className="flex items-end">
-                          <FormField
-                            control={control}
-                            name={`services.${serviceIndex}.image`}
-                            render={({ field, fieldState }) => (
-                              <FormItem className="w-full">
-                                <div className="flex flex-grow flex-col">
-                                  <Select value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger className={cn("ml-1", { "ring-2 ring-destructive": !!fieldState.error })} data-testid="ssh-image-select">
-                                      <Image alt="Docker Logo" src="/images/docker.png" layout="fixed" quality={100} width={24} height={18} priority />
-                                      <div className="flex-1 pl-2 text-left">
-                                        <SelectValue placeholder="Select image" />
-                                      </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        {imageList.map(image => {
-                                          return (
-                                            <SelectItem key={image} value={image} data-testid={`ssh-image-select-${image}`}>
-                                              {image}
-                                            </SelectItem>
-                                          );
-                                        })}
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      ) : (
-                        <FormPaper className="whitespace-break-spaces break-all">
-                          <div className="flex items-end">
-                            <ImageInput control={control} serviceIndex={serviceIndex} credentials={_credentials} setValue={setValue} />
-                          </div>
-                          {_services[serviceIndex]?.hasCredentials && (
-                            <>
-                              <div>
-                                <ImageCredentialsHost control={control} serviceIndex={serviceIndex} />
+                    {imageList?.length ? (
+                      <div className="flex items-end">
+                        <FormField
+                          control={control}
+                          name={`services.${serviceIndex}.image`}
+                          render={({ field, fieldState }) => (
+                            <FormItem className="w-full">
+                              <div className="flex flex-grow flex-col">
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                  <SelectTrigger className={cn("ml-1", { "ring-2 ring-destructive": !!fieldState.error })} data-testid="ssh-image-select">
+                                    <Image alt="Docker Logo" src="/images/docker.png" layout="fixed" quality={100} width={24} height={18} priority />
+                                    <div className="flex-1 pl-2 text-left">
+                                      <SelectValue placeholder="Select image" />
+                                    </div>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {imageList.map(image => {
+                                        return (
+                                          <SelectItem key={image} value={image} data-testid={`ssh-image-select-${image}`}>
+                                            {image}
+                                          </SelectItem>
+                                        );
+                                      })}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
                               </div>
-                              <div className="grid gap-2 sm:grid-cols-2">
-                                <div>
-                                  <ImageCredentialsUsername control={control} serviceIndex={serviceIndex} />
-                                </div>
-                                <div>
-                                  <ImageCredentialsPassword
-                                    control={control}
-                                    serviceIndex={serviceIndex}
-                                    label={_isGhcr ? "Personal Access Token" : "Password"}
-                                  />
-                                </div>
-                              </div>
-                            </>
+                            </FormItem>
                           )}
-                        </FormPaper>
-                      ))}
+                        />
+                      </div>
+                    ) : (
+                      <FormPaper className="whitespace-break-spaces break-all">
+                        <div className="flex items-end">
+                          <ImageInput control={control} serviceIndex={serviceIndex} credentials={_credentials} setValue={setValue} />
+                        </div>
+                        {_services[serviceIndex]?.hasCredentials && (
+                          <>
+                            <div>
+                              <ImageCredentialsHost control={control} serviceIndex={serviceIndex} />
+                            </div>
+                            <div className="grid gap-2 sm:grid-cols-2">
+                              <div>
+                                <ImageCredentialsUsername control={control} serviceIndex={serviceIndex} />
+                              </div>
+                              <div>
+                                <ImageCredentialsPassword
+                                  control={control}
+                                  serviceIndex={serviceIndex}
+                                  label={_isGhcr ? "Personal Access Token" : "Password"}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </FormPaper>
+                    )}
 
                     <div>
                       <CpuFormControl control={control as any} currentService={currentService} serviceIndex={serviceIndex} />
@@ -331,43 +318,39 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
                 </div>
 
                 <div>
-                  {!isGitProviderTemplate && (
-                    <>
-                      <div className="grid gap-4">
-                        {(hasComponent("ssh") || hasComponent("ssh-toggle")) && (
-                          <FormPaper className="whitespace-break-spaces break-all">
-                            {hasComponent("ssh-toggle") && (
-                              <CheckboxWithLabel
-                                checked={hasComponent("ssh")}
-                                onCheckedChange={checked => {
-                                  toggleCmp("ssh");
-                                  setValue("hasSSHKey", !!checked);
-                                }}
-                                className="ml-4"
-                                label="Expose SSH"
-                                data-testid="ssh-toggle"
-                              />
-                            )}
-                            {hasComponent("ssh") && <SSHKeyFormControl control={control} serviceIndex={serviceIndex} setValue={setValue} />}
-                          </FormPaper>
+                  <div className="grid gap-4">
+                    {(hasComponent("ssh") || hasComponent("ssh-toggle")) && (
+                      <FormPaper className="whitespace-break-spaces break-all">
+                        {hasComponent("ssh-toggle") && (
+                          <CheckboxWithLabel
+                            checked={hasComponent("ssh")}
+                            onCheckedChange={checked => {
+                              toggleCmp("ssh");
+                              setValue("hasSSHKey", !!checked);
+                            }}
+                            className="ml-4"
+                            label="Expose SSH"
+                            data-testid="ssh-toggle"
+                          />
                         )}
+                        {hasComponent("ssh") && <SSHKeyFormControl control={control} serviceIndex={serviceIndex} setValue={setValue} />}
+                      </FormPaper>
+                    )}
 
-                        <div>
-                          <EnvVarList currentService={currentService} setIsEditingEnv={setIsEditingEnv} serviceIndex={serviceIndex} />
-                        </div>
+                    <div>
+                      <EnvVarList currentService={currentService} setIsEditingEnv={setIsEditingEnv} serviceIndex={serviceIndex} />
+                    </div>
 
-                        {hasComponent("command") && (
-                          <div>
-                            <CommandList currentService={currentService} setIsEditingCommands={setIsEditingCommands} serviceIndex={serviceIndex} />
-                          </div>
-                        )}
+                    {hasComponent("command") && (
+                      <div>
+                        <CommandList currentService={currentService} setIsEditingCommands={setIsEditingCommands} serviceIndex={serviceIndex} />
                       </div>
+                    )}
+                  </div>
 
-                      <div className="mt-4">
-                        <ExposeList currentService={currentService} setIsEditingExpose={setIsEditingExpose} serviceIndex={serviceIndex} />
-                      </div>
-                    </>
-                  )}
+                  <div className="mt-4">
+                    <ExposeList currentService={currentService} setIsEditingExpose={setIsEditingExpose} serviceIndex={serviceIndex} />
+                  </div>
 
                   {hasComponent("service-count") && (
                     <div className="mt-4">

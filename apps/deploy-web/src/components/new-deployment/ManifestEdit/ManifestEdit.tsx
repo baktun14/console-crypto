@@ -41,14 +41,12 @@ import { LinkTo } from "../../shared/LinkTo";
 import ViewPanel from "../../shared/ViewPanel";
 import type { SdlBuilderRefType } from "../SdlBuilder";
 import { SdlBuilder } from "../SdlBuilder";
-import { ShareDeployButton } from "../ShareDeployButton/ShareDeployButton";
 
 export type Props = {
   onTemplateSelected: Dispatch<TemplateCreation | null>;
   selectedTemplate: TemplateCreation | null;
   editedManifest: string | null;
   setEditedManifest: Dispatch<SetStateAction<string>>;
-  isGitProviderTemplate?: boolean;
   dependencies?: typeof DEPENDENCIES;
 };
 
@@ -62,7 +60,6 @@ export const DEPENDENCIES = {
   Spinner,
   SDLEditor,
   SdlBuilder,
-  ShareDeployButton,
   DeploymentDepositModal,
   DeploymentMinimumEscrowAlertText,
   CustomNextSeo,
@@ -89,7 +86,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   setEditedManifest,
   onTemplateSelected,
   selectedTemplate,
-  isGitProviderTemplate,
   dependencies: d = DEPENDENCIES
 }) => {
   const [parsingError, setParsingError] = useState<string | null>(null);
@@ -98,7 +94,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   const [isCreatingDeployment, setIsCreatingDeployment] = useState(false);
   const [isDepositingDeployment, setIsDepositingDeployment] = useState(false);
   const [selectedSdlEditMode, setSelectedSdlEditMode] = useAtom(sdlStore.selectedSdlEditMode);
-  const [isRepoInputValid, setIsRepoInputValid] = useState(false);
   const isACTSupported = d.useSupportsACT();
   const sdlDenom = useMemo(() => {
     const defaultValue = isACTSupported ? UACT_DENOM : UAKT_DENOM;
@@ -133,10 +128,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   useWhen(hasComponent("ssh"), () => {
     setSelectedSdlEditMode("builder");
   });
-
-  useWhen(isGitProviderTemplate, () => {
-    setSelectedSdlEditMode("builder");
-  }, [isGitProviderTemplate]);
 
   useEffect(() => {
     if (selectedTemplate?.name) {
@@ -195,13 +186,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
 
     if (!isWalletConnected) {
       connect();
-      return;
-    }
-
-    if (isGitProviderTemplate && !isRepoInputValid) {
-      enqueueSnackbar(<d.Snackbar title={"Please Fill All Required Fields"} subTitle="You need fill repo url and branch to deploy" iconVariant="error" />, {
-        variant: "error"
-      });
       return;
     }
 
@@ -328,7 +312,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
             </d.CustomTooltip>
 
             <div className="flex flex-grow items-center gap-2">
-              <d.ShareDeployButton services={services} />
               <div className="flex-grow">
                 <d.Button
                   variant="default"
@@ -354,8 +337,7 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
         </div>
       </div>
 
-      {!isGitProviderTemplate && (
-        <div className="mb-2 flex gap-2">
+      <div className="mb-2 flex gap-2">
           {hasComponent("yml-editor") && (
             <div className="flex items-center">
               <d.Button
@@ -399,7 +381,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
             </>
           )}
         </div>
-      )}
 
       {parsingError && <d.Alert variant="warning">{parsingError}</d.Alert>}
 
@@ -409,16 +390,7 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
         </d.ViewPanel>
       )}
       {(hasComponent("ssh") || selectedSdlEditMode === "builder") && (
-        <d.SdlBuilder
-          sdlString={editedManifest}
-          onValidate={syncSDLValidity}
-          ref={sdlBuilderRef}
-          isGitProviderTemplate={isGitProviderTemplate}
-          setEditedManifest={setEditedManifest}
-          setDeploymentName={setDeploymentName}
-          deploymentName={deploymentName}
-          setIsRepoInputValid={setIsRepoInputValid}
-        />
+        <d.SdlBuilder sdlString={editedManifest} onValidate={syncSDLValidity} ref={sdlBuilderRef} setEditedManifest={setEditedManifest} />
       )}
 
       {isDepositingDeployment && (

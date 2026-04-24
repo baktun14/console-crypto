@@ -7,7 +7,6 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { CI_CD_TEMPLATE_ID } from "@src/config/remote-deploy.config";
 import { useServices } from "@src/context/ServicesProvider";
 import type { TemplateOutputSummaryWithCategory } from "@src/queries/useTemplateQuery";
 import { useTemplates } from "@src/queries/useTemplateQuery";
@@ -39,23 +38,16 @@ const previewTemplateIds = [
 ];
 
 type Props = {
-  onChangeGitProvider: (gh: boolean) => void;
   onTemplateSelected: (template: TemplateCreation | null) => void;
   setEditedManifest: (manifest: string) => void;
 };
 
-export const TemplateList: React.FunctionComponent<Props> = ({ onChangeGitProvider, onTemplateSelected, setEditedManifest }) => {
+export const TemplateList: React.FunctionComponent<Props> = ({ onTemplateSelected, setEditedManifest }) => {
   const { analyticsService } = useServices();
   const { templates } = useTemplates();
   const router = useRouter();
   const [previewTemplates, setPreviewTemplates] = useState<TemplateOutputSummaryWithCategory[]>([]);
   const [, setSdlEditMode] = useAtom(sdlStore.selectedSdlEditMode);
-
-  const handleGithubTemplate = async () => {
-    analyticsService.track("build_n_deploy_btn_clk", "Amplitude");
-    onChangeGitProvider(true);
-    router.push(UrlService.newDeployment({ step: RouteStep.editDeployment, gitProvider: "github", templateId: CI_CD_TEMPLATE_ID }));
-  };
 
   useEffect(() => {
     if (templates) {
@@ -112,21 +104,7 @@ export const TemplateList: React.FunctionComponent<Props> = ({ onChangeGitProvid
             <span>Upload SDL</span>
           </FileButton>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <DeployOptionBox
-            title="Build and Deploy"
-            description="Build & Deploy directly from a code repository (VCS)"
-            topIcons={[{ light: "/images/github.png", dark: "/images/github-dark.svg" }, "/images/gitlab.png", "/images/bitbucket.png"]}
-            bottomIcons={[
-              { light: "/images/nextjs.png", dark: "/images/nextjs-dark.svg" },
-              "/images/vuejs.png",
-              { light: "/images/astrojs.png", dark: "/images/astrojs-dark.svg" },
-              "/images/python.png"
-            ]}
-            onClick={handleGithubTemplate}
-            testId="build-and-deploy-card"
-          />
-
+        <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <DeployOptionBox
             title="Launch Container-VM"
             description="Deploy and work with a plain-linux vm-like container"

@@ -15,16 +15,11 @@ import { getDefaultService } from "@src/utils/sdl/data";
 import { generateSdl } from "@src/utils/sdl/sdlGenerator";
 import { importSimpleSdl } from "@src/utils/sdl/sdlImport";
 import { transformCustomSdlFields, TransformError } from "@src/utils/sdl/transformCustomSdlFields";
-import RemoteRepositoryDeployManager from "../remote-deploy/RemoteRepositoryDeployManager";
 import { SimpleServiceFormControl } from "../sdl/SimpleServiceFormControl";
 
 interface Props {
   sdlString: string | null;
   setEditedManifest: Dispatch<string>;
-  isGitProviderTemplate?: boolean;
-  setDeploymentName: Dispatch<string>;
-  deploymentName: string;
-  setIsRepoInputValid?: Dispatch<boolean>;
   onValidate?: (event: { isValid: boolean }) => void;
 }
 
@@ -34,7 +29,7 @@ export type SdlBuilderRefType = {
 };
 
 export const SdlBuilder = React.forwardRef<SdlBuilderRefType, Props>(
-  ({ sdlString, setEditedManifest, isGitProviderTemplate, setDeploymentName, deploymentName, setIsRepoInputValid, onValidate }, ref) => {
+  ({ sdlString, setEditedManifest, onValidate }, ref) => {
     const [error, setError] = useState<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const [isInit, setIsInit] = useState(false);
@@ -53,7 +48,7 @@ export const SdlBuilder = React.forwardRef<SdlBuilderRefType, Props>(
 
     const { services: formServices = [] } = watch();
     const { data: gpuModels } = useGpuModels();
-    const [serviceCollapsed, setServiceCollapsed] = useState(isGitProviderTemplate ? [0] : []);
+    const [serviceCollapsed, setServiceCollapsed] = useState<number[]>([]);
 
     React.useImperativeHandle(ref, () => ({
       getSdl: getSdl,
@@ -126,16 +121,6 @@ export const SdlBuilder = React.forwardRef<SdlBuilderRefType, Props>(
           </div>
         ) : (
           <>
-            {isGitProviderTemplate && (
-              <RemoteRepositoryDeployManager
-                setValue={setValue}
-                services={formServices as ServiceType[]}
-                control={control}
-                setDeploymentName={setDeploymentName}
-                deploymentName={deploymentName}
-                setIsRepoInputValid={setIsRepoInputValid}
-              />
-            )}
             <Form {...form}>
               <form ref={formRef} autoComplete="off">
                 {formServices &&
@@ -152,7 +137,6 @@ export const SdlBuilder = React.forwardRef<SdlBuilderRefType, Props>(
                       serviceCollapsed={serviceCollapsed}
                       setServiceCollapsed={setServiceCollapsed}
                       hasSecretOption={false}
-                      isGitProviderTemplate={isGitProviderTemplate}
                     />
                   ))}
 
@@ -162,7 +146,7 @@ export const SdlBuilder = React.forwardRef<SdlBuilderRefType, Props>(
                   </Alert>
                 )}
 
-                {!hasComponent("ssh") && !isGitProviderTemplate && (
+                {!hasComponent("ssh") && (
                   <div className="flex items-center justify-end pt-4">
                     <div>
                       <Button variant="default" size="sm" type="button" onClick={serviceManager.add}>
