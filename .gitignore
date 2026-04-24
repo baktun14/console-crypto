@@ -1,0 +1,58 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+lib-cov
+coverage
+*.lcov
+.nyc_output
+
+# Dependencies
+node_modules/
+
+# Build
+.next
+public/sw*
+public/workbox-*
+out
+dist
+apps/deploy-web/public/sdl-schema.yaml
+
+# Caches
+.npm
+.eslintcache
+.turbo
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+.env.local
+.env.local.*
+!.env.example
+
+# IDE
+.idea
+.vscode
+
+# Data
+data
+testdata
+test-results
+
+# OS
+.DS_Store
+
+# Worktrees
+.worktrees
+
+# Claude
+.claude/settings.local.json
