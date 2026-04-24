@@ -8,7 +8,6 @@ import { cn } from "@akashnetwork/ui/utils";
 import { Bin } from "iconoir-react";
 import { nanoid } from "nanoid";
 
-import { protectedEnvironmentVariables } from "@src/config/remote-deploy.config";
 import type { EnvironmentVariableType, SdlBuilderFormValuesType } from "@src/types";
 import { FormPaper } from "../FormPaper";
 
@@ -30,8 +29,6 @@ export type EnvFormModalProps = {
   control: Control<SdlBuilderFormValuesType, any>;
   hasSecretOption?: boolean;
   children?: ReactNode;
-  isRemoteDeployEnvHidden?: boolean;
-  isUpdate?: boolean;
   pathPrefix?: string;
   components?: typeof COMPONENTS;
 };
@@ -42,8 +39,6 @@ export const EnvFormModal: React.FunctionComponent<EnvFormModalProps> = ({
   envs: _envs,
   onClose,
   hasSecretOption = true,
-  isRemoteDeployEnvHidden,
-  isUpdate,
   components: c = COMPONENTS
 }) => {
   const {
@@ -56,14 +51,10 @@ export const EnvFormModal: React.FunctionComponent<EnvFormModalProps> = ({
     name: `services.${serviceIndex}.env`,
     keyName: "id"
   });
-  const filteredEnvs = envs?.filter(e => !isRemoteDeployEnvHidden || !(e?.key?.trim() in protectedEnvironmentVariables));
+  const filteredEnvs = envs;
 
   useEffect(() => {
-    const noEnvsExist = _envs.length === 0;
-    const noUserAddedEnvs = _envs.filter(e => !(e?.key?.trim() in protectedEnvironmentVariables)).length === 0;
-    const shouldAddEnv = noEnvsExist || (isRemoteDeployEnvHidden && noUserAddedEnvs && !isUpdate);
-
-    if (shouldAddEnv) {
+    if (_envs.length === 0) {
       onAddEnv();
     }
   }, []);
@@ -100,7 +91,7 @@ export const EnvFormModal: React.FunctionComponent<EnvFormModalProps> = ({
 
         const key = line.slice(0, equalsIndex).trim();
         const value = line.slice(equalsIndex + 1).trim();
-        if (!key || key in protectedEnvironmentVariables) return;
+        if (!key) return;
         didUpdate = true;
 
         const existingEnvIndex = filteredEnvs.findIndex(env => env.key === key);

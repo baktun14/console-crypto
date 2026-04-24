@@ -18,7 +18,6 @@ import type { DeploymentDto, LeaseDto } from "@src/types/deployment";
 import type { ApiProviderList } from "@src/types/provider";
 import { deploymentData as deploymentDataOriginal } from "@src/utils/deploymentData";
 import { TransactionMessageData as TransactionMessageDataOriginal } from "@src/utils/TransactionMessageData";
-import RemoteDeployUpdate from "../../remote-deploy/update/RemoteDeployUpdate";
 import { SDLEditor } from "../../sdl/SDLEditor/SDLEditor";
 import { ManifestErrorSnackbar } from "../../shared/ManifestErrorSnackbar/ManifestErrorSnackbar";
 import { Title } from "../../shared/Title";
@@ -32,7 +31,6 @@ export const DEPENDENCIES = {
   LinearLoadingSkeleton,
   LinkTo,
   ViewPanel,
-  RemoteDeployUpdate,
   SDLEditor,
   ManifestErrorSnackbar,
   Title,
@@ -52,7 +50,6 @@ type Props = {
   deployment: DeploymentDto;
   leases: LeaseDto[];
   closeManifestEditor: () => void;
-  isRemoteDeploy: boolean;
   editedManifest: string;
   onManifestChange: (value: string) => void;
   dependencies?: typeof DEPENDENCIES;
@@ -62,7 +59,6 @@ export const ManifestUpdate: React.FunctionComponent<Props> = ({
   deployment,
   leases,
   closeManifestEditor,
-  isRemoteDeploy,
   editedManifest,
   onManifestChange,
   dependencies: d = DEPENDENCIES
@@ -262,12 +258,8 @@ export const ManifestUpdate: React.FunctionComponent<Props> = ({
 
             <d.LinearLoadingSkeleton isLoading={isSendingManifest} />
 
-            <d.ViewPanel stickToBottom style={{ overflow: isRemoteDeploy ? "unset" : "hidden" }}>
-              {isRemoteDeploy ? (
-                <d.RemoteDeployUpdate sdlString={editedManifest} onManifestChange={onManifestChange} />
-              ) : (
-                <d.SDLEditor value={editedManifest} onChange={handleTextChange} onValidate={() => setParsingError(null)} />
-              )}
+            <d.ViewPanel stickToBottom style={{ overflow: "hidden" }}>
+              <d.SDLEditor value={editedManifest} onChange={handleTextChange} onValidate={() => setParsingError(null)} />
             </d.ViewPanel>
           </div>
         </>

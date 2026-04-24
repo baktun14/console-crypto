@@ -41,8 +41,6 @@ type Props = {
   dseq: string;
   providers: ApiProviderList[];
   loadDeploymentDetail: () => void;
-  isRemoteDeploy?: boolean;
-  repo?: string | null;
 };
 
 export type AcceptRefType = {
@@ -50,7 +48,7 @@ export type AcceptRefType = {
 };
 
 export const LeaseRow = React.forwardRef<AcceptRefType, Props>(
-  ({ index, lease, deploymentManifest, dseq, providers, loadDeploymentDetail, isRemoteDeploy, repo }, ref) => {
+  ({ index, lease, deploymentManifest, dseq, providers, loadDeploymentDetail }, ref) => {
     const { providerProxy } = useServices();
     const provider = providers?.find(p => p.owner === lease?.provider);
     const providerCredentials = useProviderCredentials();
@@ -331,7 +329,7 @@ export const LeaseRow = React.forwardRef<AcceptRefType, Props>(
                     </div>
                   </div>
 
-                  {leaseStatus.forwarded_ports && leaseStatus.forwarded_ports[service.name]?.length > 0 && !isRemoteDeploy && (
+                  {leaseStatus.forwarded_ports && leaseStatus.forwarded_ports[service.name]?.length > 0 && (
                     <div className={cn({ ["mb-4"]: service.uris?.length > 0 })}>
                       <LabelValueOld
                         label="Forwarded Ports:"
@@ -361,18 +359,6 @@ export const LeaseRow = React.forwardRef<AcceptRefType, Props>(
                     </div>
                   )}
 
-                  {isRemoteDeploy && repo && (
-                    <div className="mt-2">
-                      <LabelValueOld label="Deployed Repo:" />
-                      <ul className="mt-2 space-y-6">
-                        <li className="flex items-center">
-                          <Link href={repo} target="_blank" className="inline-flex items-center space-x-2 truncate text-sm">
-                            <span>{repo?.replace("https://github.com/", "")?.replace("https://gitlab.com/", "")}</span> <OpenInWindow className="text-xs" />
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
                   {service.uris?.length > 0 && (
                     <>
                       <div>
