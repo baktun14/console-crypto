@@ -56,7 +56,6 @@ export class UrlService {
   static providerDetailRaw = (owner: string) => `/providers/${owner}/raw`;
   static providerDetailEdit = (owner: string) => `/providers/${owner}/edit`;
   static settings = () => "/settings";
-  static settingsAuthorizations = () => "/settings/authorizations";
 
   static newDeployment = (params: NewDeploymentParams = {}) => {
     const {

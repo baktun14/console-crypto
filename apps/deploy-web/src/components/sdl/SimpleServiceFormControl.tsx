@@ -31,7 +31,6 @@ import Image from "next/legacy/image";
 import { SSHKeyFormControl } from "@src/components/sdl/SSHKeyFromControl";
 import { UAKT_DENOM } from "@src/config/denom.config";
 import { useSdlBuilder } from "@src/context/SdlBuilderProvider/SdlBuilderProvider";
-import { useFlag } from "@src/hooks/useFlag";
 import type { SdlBuilderFormValuesType, ServiceType } from "@src/types";
 import type { GpuVendor } from "@src/types/gpu";
 import { udenomToDenom } from "@src/utils/mathHelpers";
@@ -100,7 +99,6 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
   const _credentials = _services[serviceIndex]?.credentials;
   const _isGhcr = _credentials?.host === "ghcr.io";
   const { imageList, hasComponent, toggleCmp } = useSdlBuilder();
-  const isLogCollectorEnabled = useFlag("ui_sdl_log_collector_enabled");
   const onExpandClick = () => {
     setServiceCollapsed(prev => {
       if (expanded) {
@@ -426,13 +424,11 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
                     <TokenFormControl control={control} name={`services.${serviceIndex}.placement.pricing.denom`} />
                   </div>
 
-                  {isLogCollectorEnabled && (
-                    <div className="mt-4">
-                      <FormPaper>
-                        <LogCollectorControl serviceIndex={serviceIndex} />
-                      </FormPaper>
-                    </div>
-                  )}
+                  <div className="mt-4">
+                    <FormPaper>
+                      <LogCollectorControl serviceIndex={serviceIndex} />
+                    </FormPaper>
+                  </div>
                 </div>
               </div>
               <div className="mt-4 break-all">

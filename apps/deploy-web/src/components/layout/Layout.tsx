@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { IntlProvider } from "react-intl";
 import { ErrorFallback, Spinner } from "@akashnetwork/ui/components";
@@ -16,7 +16,6 @@ import { LinearLoadingSkeleton } from "../shared/LinearLoadingSkeleton";
 import { Nav } from "./Nav";
 import { Sidebar } from "./Sidebar";
 import { TopBanner } from "./TopBanner";
-import { TrackingScripts } from "./TrackingScripts";
 
 type Props = {
   isLoading?: boolean;
@@ -132,10 +131,6 @@ const LayoutApp: React.FunctionComponent<Props> = ({ children, isLoading, isUsin
           </div>
         </div>
       </div>
-
-      <Suspense fallback={null}>
-        <TrackingScripts />
-      </Suspense>
     </div>
   );
 };
