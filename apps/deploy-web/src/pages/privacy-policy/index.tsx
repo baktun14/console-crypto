@@ -11,17 +11,17 @@ export function PrivacyPolicy() {
       <CustomNextSeo
         title="Privacy Policy"
         url={`${domainName}${UrlService.privacyPolicy()}`}
-        description={`At Akash Console, accessible from ${domainName}, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains
+        description={`At Console Air, accessible from ${domainName}, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains
           types of information that is collected and recorded by Overclock Labs Inc. and how we use it.`}
       />
 
       <div className="mx-auto max-w-4xl p-8 leading-relaxed">
         <div className="mb-8">
-          <Title>Privacy Policy for Akash Console</Title>
+          <Title>Privacy Policy for Console Air</Title>
         </div>
 
         <p>
-          At Akash Console, accessible from {domainName}, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types
+          At Console Air, accessible from {domainName}, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types
           of information that is collected and recorded by Overclock Labs Inc. and how we use it.
         </p>
 
@@ -29,7 +29,7 @@ export function PrivacyPolicy() {
 
         <p>
           This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared
-          and/or collect in Akash Console. This policy is not applicable to any information collected offline or via channels other than this website. Our
+          and/or collect in Console Air. This policy is not applicable to any information collected offline or via channels other than this website. Our
           Privacy Policy was created with the help of the{" "}
           <a target={"_blank"} href="https://www.privacypolicygenerator.info/" rel="noreferrer noopener">
             Free Privacy Policy Generator
@@ -84,7 +84,7 @@ export function PrivacyPolicy() {
         </Title>
 
         <p>
-          Akash Console follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a
+          Console Air follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a
           part of hosting services&apos; analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet
           Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is
           personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users&apos; movement on the website,
@@ -96,7 +96,7 @@ export function PrivacyPolicy() {
         </Title>
 
         <p>
-          Like any other website, Akash Console uses &apos;cookies&apos;. These cookies are used to store information including visitors&apos; preferences, and
+          Like any other website, Console Air uses &apos;cookies&apos;. These cookies are used to store information including visitors&apos; preferences, and
           the pages on the website that the visitor accessed or visited. The information is used to optimize the users&apos; experience by customizing our web
           page content based on visitors&apos; browser type and/or other information.
         </p>
@@ -105,23 +105,23 @@ export function PrivacyPolicy() {
           Advertising Partners Privacy Policies
         </Title>
 
-        <p>You may consult this list to find the Privacy Policy for each of the advertising partners of Akash Console.</p>
+        <p>You may consult this list to find the Privacy Policy for each of the advertising partners of Console Air.</p>
 
         <p>
           Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and
-          links that appear on Akash Console, which are sent directly to users&apos; browser. They automatically receive your IP address when this occurs. These
+          links that appear on Console Air, which are sent directly to users&apos; browser. They automatically receive your IP address when this occurs. These
           technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on
           websites that you visit.
         </p>
 
-        <p>Note that Akash Console has no access to or control over these cookies that are used by third-party advertisers.</p>
+        <p>Note that Console Air has no access to or control over these cookies that are used by third-party advertisers.</p>
 
         <Title subTitle className="my-4">
           Third Party Privacy Policies
         </Title>
 
         <p>
-          Akash Console&apos;s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy
+          Console Air&apos;s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy
           Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of
           certain options.{" "}
         </p>
@@ -173,7 +173,7 @@ export function PrivacyPolicy() {
         </p>
 
         <p>
-          Akash Console does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child
+          Console Air does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child
           provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly
           remove such information from our records.
         </p>

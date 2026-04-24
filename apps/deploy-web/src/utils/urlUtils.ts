@@ -1,3 +1,4 @@
+import { browserEnvConfig } from "@src/config/browser-env.config";
 import type { FaqAnchorType } from "@src/pages/faq";
 import networkStore from "@src/store/networkStore";
 
@@ -18,7 +19,7 @@ export type NewDeploymentParams = {
   nodeVersion?: string;
 };
 
-export const domainName = "https://console.akash.network";
+export const domainName = browserEnvConfig.NEXT_PUBLIC_APP_URL;
 export function getBaseUrl(): string {
   if (typeof window !== "undefined") {
     return window.location.origin;

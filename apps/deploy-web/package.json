@@ -5,7 +5,7 @@
   "description": "Self-custody crypto wallet UI for deploying on the Akash Network.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/baktun14/console-crypto.git",
+    "url": "https://github.com/baktun14/console-air.git",
     "directory": "apps/deploy-web"
   },
   "license": "Apache-2.0",

@@ -48,7 +48,7 @@ export const LocalDataManagerComponent: FC<LocalDataManagerProps> = ({ read, wri
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "console.akash.network.data.json";
+    link.download = "console-air.data.json";
     link.click();
   }, []);
 

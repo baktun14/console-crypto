@@ -1,5 +1,5 @@
 {
-  "name": "@akashnetwork/console-crypto",
+  "name": "@akashnetwork/console-air",
   "private": true,
   "workspaces": [
     "./packages/*",

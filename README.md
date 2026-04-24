@@ -1,4 +1,4 @@
-# Console Crypto
+# Console Air
 
 Self-hostable, self-custody crypto wallet UI for deploying on the [Akash Network](https://akash.network).
 
@@ -10,8 +10,8 @@ Self-hostable, self-custody crypto wallet UI for deploying on the [Akash Network
 ## Setup
 
 ```bash
-git clone git@github.com:baktun14/console-crypto.git
-cd console-crypto
+git clone git@github.com:baktun14/console-air.git
+cd console-air
 npm install
 ```
 
