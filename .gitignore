@@ -38,6 +38,7 @@ apps/deploy-web/public/sdl-schema.yaml
 .env.local
 .env.local.*
 !.env.example
+!apps/deploy-web/env/.env.sample
 
 # IDE
 .idea

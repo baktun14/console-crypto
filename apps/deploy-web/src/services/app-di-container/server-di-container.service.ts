@@ -8,8 +8,8 @@ import { createChildContainer } from "../container/createContainer";
 import { createAppRootContainer } from "./app-di-container";
 
 const rootContainer = createAppRootContainer({
-  ...serverEnvConfig,
   runtimeEnv: "nodejs",
+  BASE_API_MAINNET_URL: serverEnvConfig.NEXT_PUBLIC_BASE_API_MAINNET_URL,
   BASE_PROVIDER_PROXY_URL: serverEnvConfig.NEXT_PUBLIC_PROVIDER_PROXY_URL,
   globalRequestMiddleware: clientIpForwardingInterceptor,
   apiUrlService: () => new ApiUrlService(serverEnvConfig)
