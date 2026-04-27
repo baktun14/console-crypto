@@ -92,12 +92,19 @@ async function forwardRequestStream(req: NextApiRequest, res: NextApiResponse, o
   await response.body.pipeTo(Writable.toWeb(res), { signal: options.signal });
 }
 
+// Node's fetch (undici) auto-decompresses gzip/br/deflate response bodies, so the
+// bytes streamed to the client are already plaintext. We have to drop the original
+// content-encoding header (otherwise the browser would try to decompress plaintext
+// and fail with ERR_CONTENT_DECODING_FAILED) and content-length (the decompressed
+// length differs from the upstream's compressed value).
+const RESPONSE_HEADERS_TO_SKIP = new Set([...HEADERS_TO_SKIP, "content-encoding", "content-length"]);
+
 function filterResponseHeaders(headers: Headers) {
   const result: Record<string, string | string[]> = {};
 
   for (const [k, v] of headers.entries()) {
     const lowKey = k.toLowerCase();
-    if (HEADERS_TO_SKIP.has(lowKey) || lowKey === "set-cookie") continue;
+    if (RESPONSE_HEADERS_TO_SKIP.has(lowKey) || lowKey === "set-cookie") continue;
     result[k] = v;
   }
 
