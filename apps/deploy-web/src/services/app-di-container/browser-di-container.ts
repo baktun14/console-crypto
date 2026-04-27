@@ -12,9 +12,14 @@ import { GitLabService } from "../remote-deploy/gitlab-http.service";
 import { SDLAnalyzer } from "../sdl-analyzer/sdl-analyzer";
 import { createAppRootContainer } from "./app-di-container";
 
+// Console API (/v1/*) requests are proxied through Next's /api/proxy route so the
+// browser only ever talks to its own origin. The proxy forwards server-side to
+// NEXT_PUBLIC_API_BASE_URL (defaults to https://console-api.akash.network).
+const CONSOLE_API_BROWSER_BASE_URL = "/api/proxy";
+
 const rootContainer = createAppRootContainer({
   runtimeEnv: "browser",
-  BASE_API_MAINNET_URL: browserEnvConfig.NEXT_PUBLIC_BASE_API_MAINNET_URL,
+  BASE_API_MAINNET_URL: CONSOLE_API_BROWSER_BASE_URL,
   BASE_PROVIDER_PROXY_URL: browserEnvConfig.NEXT_PUBLIC_PROVIDER_PROXY_URL,
   apiUrlService: () => new ApiUrlService(browserEnvConfig)
 });
@@ -36,7 +41,7 @@ export const services = createChildContainer(rootContainer, {
   gitlabService: () => new GitLabService(services.internalApiHttpClient, services.createAxios),
   internalApiHttpClient: () => services.createAxios(),
   consoleApiHttpClient: () =>
-    services.applyAxiosInterceptors(services.createAxios({ baseURL: services.publicConfig.NEXT_PUBLIC_BASE_API_MAINNET_URL })),
+    services.applyAxiosInterceptors(services.createAxios({ baseURL: CONSOLE_API_BROWSER_BASE_URL })),
   publicConsoleApiHttpClient: () => services.applyAxiosInterceptors(services.createAxios()),
   fallbackChainApiHttpClient: () =>
     services.applyAxiosInterceptors(services.createAxios(), {

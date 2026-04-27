@@ -9,7 +9,9 @@ import { createAppRootContainer } from "./app-di-container";
 
 const rootContainer = createAppRootContainer({
   runtimeEnv: "nodejs",
-  BASE_API_MAINNET_URL: serverEnvConfig.NEXT_PUBLIC_BASE_API_MAINNET_URL,
+  // Server-side calls to the Console API hit the absolute upstream URL directly;
+  // there's no Next /api/proxy hop on the server. Defaults to https://console-api.akash.network.
+  BASE_API_MAINNET_URL: serverEnvConfig.NEXT_PUBLIC_API_BASE_URL,
   BASE_PROVIDER_PROXY_URL: serverEnvConfig.NEXT_PUBLIC_PROVIDER_PROXY_URL,
   globalRequestMiddleware: clientIpForwardingInterceptor,
   apiUrlService: () => new ApiUrlService(serverEnvConfig)

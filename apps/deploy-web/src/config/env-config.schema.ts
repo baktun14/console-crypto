@@ -3,18 +3,32 @@ import { z } from "zod";
 const networkId = z.enum(["mainnet", "sandbox", "testnet"]);
 const coercedBoolean = () => z.enum(["true", "false"]).transform(val => val === "true");
 
+// Treats blank or relative-path values as "missing" so the production default kicks in.
+// Self-host instances don't have the Console reverse proxy, so a leftover relative
+// path like "/api-mainnet" from an older .env would otherwise resolve against the dev
+// origin and 404. Absolute URLs (http://, https://) and the "%{NETWORK}" placeholder
+// are passed through untouched.
+const productionUrl = (defaultValue: string) =>
+  z.preprocess(value => {
+    if (typeof value !== "string") return undefined;
+    const trimmed = value.trim();
+    if (trimmed === "") return undefined;
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return undefined;
+  }, z.string().url().optional().default(defaultValue));
+
 export const browserEnvSchema = z.object({
   NEXT_PUBLIC_DEFAULT_NETWORK_ID: networkId.optional().default("mainnet"),
-  NEXT_PUBLIC_APP_URL: z.string().url().optional().default("http://localhost:3000"),
-  NEXT_PUBLIC_API_BASE_URL: z.string().optional().default("https://console-api.akash.network"),
-  NEXT_PUBLIC_STATS_APP_URL: z.string().url().optional().default("https://stats.akash.network"),
-  NEXT_PUBLIC_PROVIDER_PROXY_URL: z.string().optional().default("https://console.akash.network/provider-proxy-%{NETWORK}"),
+  NEXT_PUBLIC_APP_URL: productionUrl("http://localhost:3000"),
+  NEXT_PUBLIC_API_BASE_URL: productionUrl("https://console-api.akash.network"),
+  NEXT_PUBLIC_STATS_APP_URL: productionUrl("https://stats.akash.network"),
+  NEXT_PUBLIC_PROVIDER_PROXY_URL: productionUrl("https://console.akash.network/provider-proxy-%{NETWORK}"),
   NEXT_PUBLIC_NODE_ENV: z.enum(["development", "production", "test"]).optional().default("development"),
   NEXT_PUBLIC_DEFAULT_INITIAL_DEPOSIT: z.number({ coerce: true }).optional().default(500000),
-  NEXT_PUBLIC_BASE_API_MAINNET_URL: z.string().optional().default("https://console.akash.network/api-mainnet"),
-  NEXT_PUBLIC_BASE_API_TESTNET_URL: z.string().optional().default("https://console.akash.network/api-testnet"),
-  NEXT_PUBLIC_BASE_API_SANDBOX_URL: z.string().optional().default("https://console.akash.network/api-sandbox"),
-  NEXT_PUBLIC_BASE_TEMPLATES_URL: z.string().url().optional().default("https://akash-templates.pages.dev"),
+  NEXT_PUBLIC_BASE_API_MAINNET_URL: productionUrl("https://console.akash.network/api-mainnet"),
+  NEXT_PUBLIC_BASE_API_TESTNET_URL: productionUrl("https://console.akash.network/api-testnet"),
+  NEXT_PUBLIC_BASE_API_SANDBOX_URL: productionUrl("https://console.akash.network/api-sandbox"),
+  NEXT_PUBLIC_BASE_TEMPLATES_URL: productionUrl("https://akash-templates.pages.dev"),
   // Remote-deploy / git integrations are not part of the self-host crypto wallet
   // build but the components that read them still exist. Defaulting to empty
   // strings lets the schema validate while leaving those code paths inert.

@@ -6,9 +6,15 @@ import { browserEnvConfig } from "@src/config/browser-env.config";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const url = req.url?.replace(/^\/api\/proxy\//, "/") || "";
 
-  const headers: Record<string, string> = {
-    "cf-connecting-ip": String(req.headers["cf-connecting-ip"] || req.socket.remoteAddress || "")
-  };
+  const headers: Record<string, string> = {};
+
+  // Only forward cf-connecting-ip when it was actually set by an upstream Cloudflare
+  // edge — synthesizing it from req.socket.remoteAddress (e.g. "::1" in local dev)
+  // makes Cloudflare's WAF flag the request and return 403.
+  const cfConnectingIp = req.headers["cf-connecting-ip"];
+  if (typeof cfConnectingIp === "string" && cfConnectingIp.length > 0) {
+    headers["cf-connecting-ip"] = cfConnectingIp;
+  }
 
   if (req.headers["traceparent"]) {
     headers["traceparent"] = req.headers["traceparent"] as string;
