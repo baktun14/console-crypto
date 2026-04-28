@@ -68,7 +68,6 @@ type Props = {
   setValue: UseFormSetValue<SdlBuilderFormValuesType>;
   gpuModels: GpuVendor[] | undefined;
   hasSecretOption?: boolean;
-  isGitProviderTemplate?: boolean;
 };
 
 export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
@@ -81,8 +80,7 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
   setServiceCollapsed,
   setValue,
   gpuModels,
-  hasSecretOption,
-  isGitProviderTemplate
+  hasSecretOption
 }) => {
   const [isEditingCommands, setIsEditingCommands] = useState<number | boolean | null>(null);
   const [isEditingEnv, setIsEditingEnv] = useState<number | boolean | null>(null);
@@ -157,48 +155,38 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
               placement={currentService.placement}
             />
           )}
-          <div
-            className={cn(
-              "flex justify-between p-4",
-              { ["border-b border-muted-foreground/20"]: expanded },
-              isGitProviderTemplate ? "items-center" : "items-end"
-            )}
-          >
-            {isGitProviderTemplate ? (
-              <h1 className="font-semibold">Build Server Specs</h1>
-            ) : (
-              <FormField
-                control={control}
-                name={`services.${serviceIndex}.title`}
-                render={({ field }) => (
-                  <FormInput
-                    type="text"
-                    label={
-                      <div className="inline-flex items-center">
-                        Service Name
-                        <CustomTooltip
-                          title={
-                            <>
-                              The service name serves as a identifier for the workload to be ran on the Akash Network.
-                              <br />
-                              <br />
-                              <a href="https://akash.network/docs/getting-started/stack-definition-language/#services" target="_blank" rel="noopener">
-                                View official documentation.
-                              </a>
-                            </>
-                          }
-                        >
-                          <InfoCircle className="ml-2 text-xs text-muted-foreground" />
-                        </CustomTooltip>
-                      </div>
-                    }
-                    value={field.value}
-                    className="flex-grow"
-                    onChange={event => field.onChange((event.target.value || "").toLowerCase())}
-                  />
-                )}
-              />
-            )}
+          <div className={cn("flex items-end justify-between p-4", { ["border-b border-muted-foreground/20"]: expanded })}>
+            <FormField
+              control={control}
+              name={`services.${serviceIndex}.title`}
+              render={({ field }) => (
+                <FormInput
+                  type="text"
+                  label={
+                    <div className="inline-flex items-center">
+                      Service Name
+                      <CustomTooltip
+                        title={
+                          <>
+                            The service name serves as a identifier for the workload to be ran on the Akash Network.
+                            <br />
+                            <br />
+                            <a href="https://akash.network/docs/getting-started/stack-definition-language/#services" target="_blank" rel="noopener">
+                              View official documentation.
+                            </a>
+                          </>
+                        }
+                      >
+                        <InfoCircle className="ml-2 text-xs text-muted-foreground" />
+                      </CustomTooltip>
+                    </div>
+                  }
+                  value={field.value}
+                  className="flex-grow"
+                  onChange={event => field.onChange((event.target.value || "").toLowerCase())}
+                />
+              )}
+            />
             <div className="ml-4 flex items-center">
               {!expanded && isDesktop && (
                 <div className="flex items-center whitespace-nowrap">
@@ -229,8 +217,7 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <div className="grid gap-4">
-                    {!isGitProviderTemplate &&
-                      (imageList?.length ? (
+                    {imageList?.length ? (
                         <div className="flex items-end">
                           <FormField
                             control={control}
@@ -287,7 +274,7 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
                             </>
                           )}
                         </FormPaper>
-                      ))}
+                      )}
 
                     <div>
                       <CpuFormControl control={control as any} currentService={currentService} serviceIndex={serviceIndex} />
@@ -331,43 +318,39 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
                 </div>
 
                 <div>
-                  {!isGitProviderTemplate && (
-                    <>
-                      <div className="grid gap-4">
-                        {(hasComponent("ssh") || hasComponent("ssh-toggle")) && (
-                          <FormPaper className="whitespace-break-spaces break-all">
-                            {hasComponent("ssh-toggle") && (
-                              <CheckboxWithLabel
-                                checked={hasComponent("ssh")}
-                                onCheckedChange={checked => {
-                                  toggleCmp("ssh");
-                                  setValue("hasSSHKey", !!checked);
-                                }}
-                                className="ml-4"
-                                label="Expose SSH"
-                                data-testid="ssh-toggle"
-                              />
-                            )}
-                            {hasComponent("ssh") && <SSHKeyFormControl control={control} serviceIndex={serviceIndex} setValue={setValue} />}
-                          </FormPaper>
+                  <div className="grid gap-4">
+                    {(hasComponent("ssh") || hasComponent("ssh-toggle")) && (
+                      <FormPaper className="whitespace-break-spaces break-all">
+                        {hasComponent("ssh-toggle") && (
+                          <CheckboxWithLabel
+                            checked={hasComponent("ssh")}
+                            onCheckedChange={checked => {
+                              toggleCmp("ssh");
+                              setValue("hasSSHKey", !!checked);
+                            }}
+                            className="ml-4"
+                            label="Expose SSH"
+                            data-testid="ssh-toggle"
+                          />
                         )}
+                        {hasComponent("ssh") && <SSHKeyFormControl control={control} serviceIndex={serviceIndex} setValue={setValue} />}
+                      </FormPaper>
+                    )}
 
-                        <div>
-                          <EnvVarList currentService={currentService} setIsEditingEnv={setIsEditingEnv} serviceIndex={serviceIndex} />
-                        </div>
+                    <div>
+                      <EnvVarList currentService={currentService} setIsEditingEnv={setIsEditingEnv} serviceIndex={serviceIndex} />
+                    </div>
 
-                        {hasComponent("command") && (
-                          <div>
-                            <CommandList currentService={currentService} setIsEditingCommands={setIsEditingCommands} serviceIndex={serviceIndex} />
-                          </div>
-                        )}
+                    {hasComponent("command") && (
+                      <div>
+                        <CommandList currentService={currentService} setIsEditingCommands={setIsEditingCommands} serviceIndex={serviceIndex} />
                       </div>
+                    )}
+                  </div>
 
-                      <div className="mt-4">
-                        <ExposeList currentService={currentService} setIsEditingExpose={setIsEditingExpose} serviceIndex={serviceIndex} />
-                      </div>
-                    </>
-                  )}
+                  <div className="mt-4">
+                    <ExposeList currentService={currentService} setIsEditingExpose={setIsEditingExpose} serviceIndex={serviceIndex} />
+                  </div>
 
                   {hasComponent("service-count") && (
                     <div className="mt-4">

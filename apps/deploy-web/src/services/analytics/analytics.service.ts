@@ -3,7 +3,6 @@ export type AnalyticsUser = {
   anonymous?: boolean;
   emailVerified?: boolean;
   custodialWallet?: boolean;
-  managedWallet?: boolean;
 };
 
 export type EventProperties = Record<string, unknown>;

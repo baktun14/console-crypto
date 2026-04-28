@@ -1,8 +1,12 @@
+import type { TemplateOutput } from "@akashnetwork/http-sdk";
 import { z } from "zod";
 
-import { CI_CD_TEMPLATE_ID } from "@src/config/remote-deploy.config";
 import { defineServerSideProps } from "@src/lib/nextjs/defineServerSideProps/defineServerSideProps";
-import { UrlService } from "@src/utils/urlUtils";
+
+type Props = {
+  template?: TemplateOutput;
+  templateId?: string;
+};
 
 export const createServerSideProps = (route: string) =>
   defineServerSideProps({
@@ -10,35 +14,16 @@ export const createServerSideProps = (route: string) =>
     schema: z.object({
       query: z.object({
         templateId: z.string().optional(),
-        branch: z.string().optional(),
         step: z.string().optional(),
         dseq: z.string().optional(),
-        redeploy: z.string().optional(),
-        gitProviderCode: z.string().optional(),
-        gitProvider: z.string().optional(),
-        buildCommand: z.string().optional(),
-        startCommand: z.string().optional(),
-        installCommand: z.string().optional(),
-        buildDirectory: z.string().optional(),
-        nodeVersion: z.string().optional(),
-        repoUrl: z
-          .string()
-          .optional()
-          .refine(val => !val || /^https?:\/\/(www\.)?(github|gitlab|bitbucket)\.(com|org)(?:\/|[?#]|$)/i.test(val), {
-            message: "repoUrl must start with github, gitlab, or bitbucket URL"
-          })
+        redeploy: z.string().optional()
       })
     }),
     async handler({ query, services }) {
       const { templateId } = query;
 
-      if (!templateId && !query.repoUrl) {
-        return { props: {} };
-      }
-
       if (!templateId) {
-        query = { ...query, templateId: CI_CD_TEMPLATE_ID };
-        return { redirect: { destination: UrlService.newDeployment(query), permanent: false } };
+        return { props: {} as Props };
       }
 
       const template = await services.template.findById(templateId).catch(error => {
@@ -46,10 +31,10 @@ export const createServerSideProps = (route: string) =>
         return null;
       });
 
-      if (template && templateId) {
-        return { props: { template, templateId } };
+      if (template) {
+        return { props: { template, templateId } satisfies Props };
       }
 
-      return { props: { templateId } };
+      return { props: { templateId } satisfies Props };
     }
   });

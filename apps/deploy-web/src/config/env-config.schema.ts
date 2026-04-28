@@ -28,16 +28,7 @@ export const browserEnvSchema = z.object({
   NEXT_PUBLIC_BASE_API_MAINNET_URL: productionUrl("https://console.akash.network/api-mainnet"),
   NEXT_PUBLIC_BASE_API_TESTNET_URL: productionUrl("https://console.akash.network/api-testnet"),
   NEXT_PUBLIC_BASE_API_SANDBOX_URL: productionUrl("https://console.akash.network/api-sandbox"),
-  NEXT_PUBLIC_BASE_TEMPLATES_URL: productionUrl("https://akash-templates.pages.dev"),
-  // Remote-deploy / git integrations are not part of the self-host crypto wallet
-  // build but the components that read them still exist. Defaulting to empty
-  // strings lets the schema validate while leaving those code paths inert.
-  NEXT_PUBLIC_REDIRECT_URI: z.string().optional().default(""),
-  NEXT_PUBLIC_GITHUB_APP_INSTALLATION_URL: z.string().optional().default(""),
-  NEXT_PUBLIC_BITBUCKET_CLIENT_ID: z.string().optional().default(""),
-  NEXT_PUBLIC_GITLAB_CLIENT_ID: z.string().optional().default(""),
-  NEXT_PUBLIC_GITHUB_CLIENT_ID: z.string().optional().default(""),
-  NEXT_PUBLIC_CI_CD_IMAGE_NAME: z.string().optional().default("")
+  NEXT_PUBLIC_BASE_TEMPLATES_URL: productionUrl("https://akash-templates.pages.dev")
 });
 
 export const serverEnvSchema = browserEnvSchema.extend({

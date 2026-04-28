@@ -1,6 +1,3 @@
-import { createAPIClient } from "@akashnetwork/react-query-sdk/notifications";
-import { requestFn } from "@openapi-qraft/react";
-
 import { serverEnvConfig } from "@src/config/server-env.config";
 import { ApiUrlService } from "../api-url/api-url.service";
 import { clientIpForwardingInterceptor } from "../client-ip-forwarding/client-ip-forwarding.interceptor";
@@ -18,11 +15,6 @@ const rootContainer = createAppRootContainer({
 });
 
 export const services = createChildContainer(rootContainer, {
-  notificationsApi: () =>
-    createAPIClient({
-      requestFn,
-      baseUrl: services.apiUrlService.getBaseApiUrlFor(services.privateConfig.NEXT_PUBLIC_DEFAULT_NETWORK_ID)
-    }),
   privateConfig: () => Object.freeze(serverEnvConfig),
   consoleApiHttpClient: () => services.applyAxiosInterceptors(services.createAxios())
 });

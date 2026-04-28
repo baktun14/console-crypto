@@ -3,7 +3,7 @@ import type { ComponentProps, Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { SDLInput } from "@akashnetwork/chain-sdk/web";
 import { yaml } from "@akashnetwork/chain-sdk/web";
-import { Alert, Button, CustomTooltip, FileButton, Input, Snackbar, Spinner } from "@akashnetwork/ui/components";
+import { Alert, Button, CustomTooltip, FileButton, Input, Spinner } from "@akashnetwork/ui/components";
 import { cn } from "@akashnetwork/ui/utils";
 import type { EncodeObject } from "@cosmjs/proto-signing";
 import { useTheme as useMuiTheme } from "@mui/material/styles";
@@ -11,7 +11,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ArrowRight, InfoCircle, Upload } from "iconoir-react";
 import { useAtom } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSnackbar } from "notistack";
 
 import { UACT_DENOM, UAKT_DENOM } from "@src/config/denom.config";
 import { LOG_COLLECTOR_IMAGE } from "@src/config/log-collector.config";
@@ -21,7 +20,6 @@ import { useWallet } from "@src/context/WalletProvider";
 import { useCertificate } from "@src/hooks/useCertificate/useCertificate";
 import { useImportSimpleSdl } from "@src/hooks/useImportSimpleSdl";
 import { useSupportsACT } from "@src/hooks/useSupportsACT/useSupportsACT";
-import { useWhen } from "@src/hooks/useWhen";
 import { useDepositParams } from "@src/queries/useSaveSettings";
 import sdlStore from "@src/store/sdlStore";
 import type { TemplateCreation } from "@src/types";
@@ -41,14 +39,12 @@ import { LinkTo } from "../../shared/LinkTo";
 import ViewPanel from "../../shared/ViewPanel";
 import type { SdlBuilderRefType } from "../SdlBuilder";
 import { SdlBuilder } from "../SdlBuilder";
-import { ShareDeployButton } from "../ShareDeployButton/ShareDeployButton";
 
 export type Props = {
   onTemplateSelected: Dispatch<TemplateCreation | null>;
   selectedTemplate: TemplateCreation | null;
   editedManifest: string | null;
   setEditedManifest: Dispatch<SetStateAction<string>>;
-  isGitProviderTemplate?: boolean;
   dependencies?: typeof DEPENDENCIES;
 };
 
@@ -58,11 +54,9 @@ export const DEPENDENCIES = {
   CustomTooltip,
   FileButton,
   Input,
-  Snackbar,
   Spinner,
   SDLEditor,
   SdlBuilder,
-  ShareDeployButton,
   DeploymentDepositModal,
   DeploymentMinimumEscrowAlertText,
   CustomNextSeo,
@@ -77,7 +71,6 @@ export const DEPENDENCIES = {
   useDepositParams,
   useMuiTheme,
   useMediaQuery,
-  useSnackbar,
   useRouter,
   useSearchParams,
   useSupportsACT,
@@ -89,7 +82,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   setEditedManifest,
   onTemplateSelected,
   selectedTemplate,
-  isGitProviderTemplate,
   dependencies: d = DEPENDENCIES
 }) => {
   const [parsingError, setParsingError] = useState<string | null>(null);
@@ -98,7 +90,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   const [isCreatingDeployment, setIsCreatingDeployment] = useState(false);
   const [isDepositingDeployment, setIsDepositingDeployment] = useState(false);
   const [selectedSdlEditMode, setSelectedSdlEditMode] = useAtom(sdlStore.selectedSdlEditMode);
-  const [isRepoInputValid, setIsRepoInputValid] = useState(false);
   const isACTSupported = d.useSupportsACT();
   const sdlDenom = useMemo(() => {
     const defaultValue = isACTSupported ? UACT_DENOM : UAKT_DENOM;
@@ -127,16 +118,13 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   const templateId = searchParams.get("templateId");
   const { data: depositParams } = d.useDepositParams();
   const defaultDeposit = depositParams || appConfig.NEXT_PUBLIC_DEFAULT_INITIAL_DEPOSIT;
-  const { enqueueSnackbar } = d.useSnackbar();
   const services = d.useImportSimpleSdl(isValidSdl ? editedManifest : null);
 
-  useWhen(hasComponent("ssh"), () => {
-    setSelectedSdlEditMode("builder");
-  });
-
-  useWhen(isGitProviderTemplate, () => {
-    setSelectedSdlEditMode("builder");
-  }, [isGitProviderTemplate]);
+  useEffect(() => {
+    if (hasComponent("ssh")) {
+      setSelectedSdlEditMode("builder");
+    }
+  }, [hasComponent, setSelectedSdlEditMode]);
 
   useEffect(() => {
     if (selectedTemplate?.name) {
@@ -195,13 +183,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
 
     if (!isWalletConnected) {
       connect();
-      return;
-    }
-
-    if (isGitProviderTemplate && !isRepoInputValid) {
-      enqueueSnackbar(<d.Snackbar title={"Please Fill All Required Fields"} subTitle="You need fill repo url and branch to deploy" iconVariant="error" />, {
-        variant: "error"
-      });
       return;
     }
 
@@ -328,7 +309,6 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
             </d.CustomTooltip>
 
             <div className="flex flex-grow items-center gap-2">
-              <d.ShareDeployButton services={services} />
               <div className="flex-grow">
                 <d.Button
                   variant="default"
@@ -354,52 +334,50 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
         </div>
       </div>
 
-      {!isGitProviderTemplate && (
-        <div className="mb-2 flex gap-2">
-          {hasComponent("yml-editor") && (
-            <div className="flex items-center">
-              <d.Button
-                variant={selectedSdlEditMode === "builder" ? "default" : "outline"}
-                onClick={() => {
-                  changeMode("builder");
-                  analyticsService.track("builder_mode_btn_clk", "Amplitude");
-                }}
-                size="sm"
-                className={cn("flex-grow sm:flex-grow-0", { "rounded-e-none": hasComponent("yml-editor") })}
-                disabled={!!parsingError && selectedSdlEditMode === "yaml"}
-              >
-                Builder
-              </d.Button>
-              <d.Button
-                variant={selectedSdlEditMode === "yaml" ? "default" : "outline"}
-                color={selectedSdlEditMode === "yaml" ? "secondary" : "primary"}
-                onClick={() => {
-                  changeMode("yaml");
-                  analyticsService.track("yml_mode_btn_clk", "Amplitude");
-                }}
-                size="sm"
-                className="flex-grow rounded-s-none sm:flex-grow-0"
-              >
-                YAML
-              </d.Button>
-            </div>
-          )}
-          {hasComponent("yml-uploader") && !templateId && (
-            <>
-              <d.FileButton
-                onFileSelect={onFileSelect}
-                accept=".yml,.yaml,.txt"
-                size="sm"
-                variant="outline"
-                className="flex-grow hover:bg-primary hover:text-white sm:flex-grow-0"
-              >
-                <Upload className="text-xs" />
-                <span className="text-xs">Upload your SDL</span>
-              </d.FileButton>
-            </>
-          )}
-        </div>
-      )}
+      <div className="mb-2 flex gap-2">
+        {hasComponent("yml-editor") && (
+          <div className="flex items-center">
+            <d.Button
+              variant={selectedSdlEditMode === "builder" ? "default" : "outline"}
+              onClick={() => {
+                changeMode("builder");
+                analyticsService.track("builder_mode_btn_clk", "Amplitude");
+              }}
+              size="sm"
+              className={cn("flex-grow sm:flex-grow-0", { "rounded-e-none": hasComponent("yml-editor") })}
+              disabled={!!parsingError && selectedSdlEditMode === "yaml"}
+            >
+              Builder
+            </d.Button>
+            <d.Button
+              variant={selectedSdlEditMode === "yaml" ? "default" : "outline"}
+              color={selectedSdlEditMode === "yaml" ? "secondary" : "primary"}
+              onClick={() => {
+                changeMode("yaml");
+                analyticsService.track("yml_mode_btn_clk", "Amplitude");
+              }}
+              size="sm"
+              className="flex-grow rounded-s-none sm:flex-grow-0"
+            >
+              YAML
+            </d.Button>
+          </div>
+        )}
+        {hasComponent("yml-uploader") && !templateId && (
+          <>
+            <d.FileButton
+              onFileSelect={onFileSelect}
+              accept=".yml,.yaml,.txt"
+              size="sm"
+              variant="outline"
+              className="flex-grow hover:bg-primary hover:text-white sm:flex-grow-0"
+            >
+              <Upload className="text-xs" />
+              <span className="text-xs">Upload your SDL</span>
+            </d.FileButton>
+          </>
+        )}
+      </div>
 
       {parsingError && <d.Alert variant="warning">{parsingError}</d.Alert>}
 
@@ -413,11 +391,9 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
           sdlString={editedManifest}
           onValidate={syncSDLValidity}
           ref={sdlBuilderRef}
-          isGitProviderTemplate={isGitProviderTemplate}
           setEditedManifest={setEditedManifest}
           setDeploymentName={setDeploymentName}
           deploymentName={deploymentName}
-          setIsRepoInputValid={setIsRepoInputValid}
         />
       )}
 

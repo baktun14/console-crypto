@@ -1,15 +1,8 @@
-import { createReactQueryApiClient } from "@akashnetwork/react-query-sdk/notifications/create-react-query-client";
-import { requestFn } from "@openapi-qraft/react";
-
 import { browserEnvConfig } from "@src/config/browser-env.config";
 import { ApiUrlService } from "@src/services/api-url/api-url.service";
 import * as walletUtils from "@src/utils/walletUtils";
 import { createChildContainer } from "../container/createContainer";
 import { DeploymentStorageService } from "../deployment-storage/deployment-storage.service";
-import { BitbucketService } from "../remote-deploy/bitbucket-http.service";
-import { GitHubService } from "../remote-deploy/github-http.service";
-import { GitLabService } from "../remote-deploy/gitlab-http.service";
-import { SDLAnalyzer } from "../sdl-analyzer/sdl-analyzer";
 import { createAppRootContainer } from "./app-di-container";
 
 // Console API (/v1/*) requests are proxied through Next's /api/proxy route so the
@@ -25,23 +18,7 @@ const rootContainer = createAppRootContainer({
 });
 
 export const services = createChildContainer(rootContainer, {
-  notificationsApi: () =>
-    createReactQueryApiClient({
-      requestFn,
-      baseUrl: "/api/proxy",
-      queryClient: services.queryClient
-    }),
-  githubService: () =>
-    new GitHubService(services.internalApiHttpClient, services.createAxios, {
-      githubAppInstallationUrl: services.publicConfig.NEXT_PUBLIC_GITHUB_APP_INSTALLATION_URL,
-      githubClientId: services.publicConfig.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-      redirectUrl: services.publicConfig.NEXT_PUBLIC_REDIRECT_URI
-    }),
-  bitbucketService: () => new BitbucketService(services.internalApiHttpClient, services.createAxios),
-  gitlabService: () => new GitLabService(services.internalApiHttpClient, services.createAxios),
-  internalApiHttpClient: () => services.createAxios(),
-  consoleApiHttpClient: () =>
-    services.applyAxiosInterceptors(services.createAxios({ baseURL: CONSOLE_API_BROWSER_BASE_URL })),
+  consoleApiHttpClient: () => services.applyAxiosInterceptors(services.createAxios({ baseURL: CONSOLE_API_BROWSER_BASE_URL })),
   publicConsoleApiHttpClient: () => services.applyAxiosInterceptors(services.createAxios()),
   fallbackChainApiHttpClient: () =>
     services.applyAxiosInterceptors(services.createAxios(), {
@@ -55,6 +32,5 @@ export const services = createChildContainer(rootContainer, {
   storedWalletsService: () => walletUtils,
   deploymentLocalStorage: () => new DeploymentStorageService(localStorage, services.networkStore),
   windowLocation: () => window.location,
-  windowHistory: () => window.history,
-  sdlAnalyzer: () => new SDLAnalyzer({ ciCdImageName: services.publicConfig.NEXT_PUBLIC_CI_CD_IMAGE_NAME })
+  windowHistory: () => window.history
 });
