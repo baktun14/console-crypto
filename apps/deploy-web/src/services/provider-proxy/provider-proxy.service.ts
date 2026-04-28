@@ -27,8 +27,11 @@ export class ProviderProxyService {
 
   request<T>(url: string, options: ProviderProxyPayload): Promise<AxiosResponse<T>> {
     const { providerIdentity, timeout, credentials, ...params } = options;
+    // Empty URL keeps the request on the configured baseURL with no trailing slash —
+    // avoids Next's automatic 308 trailing-slash redirect when the proxy goes through
+    // /api/provider-proxy/{network} during browser-side calls.
     return this.axios.post(
-      "/",
+      "",
       {
         ...params,
         method: options.method || "GET",
