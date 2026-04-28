@@ -15,24 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const target = PROVIDER_PROXY_TEMPLATE.replace("%{NETWORK}", network) + "/";
 
-  const headers: Record<string, string> = {};
-
-  const cfConnectingIp = req.headers["cf-connecting-ip"];
-  if (typeof cfConnectingIp === "string" && cfConnectingIp.length > 0) {
-    headers["cf-connecting-ip"] = cfConnectingIp;
-  }
-
-  if (req.headers["traceparent"]) {
-    headers["traceparent"] = req.headers["traceparent"] as string;
-  }
-
-  if (req.headers["baggage"]) {
-    headers["baggage"] = req.headers["baggage"] as string;
-  }
-
+  // Incoming request headers are forwarded transparently by proxyRequest, so the
+  // upstream sees cf-connecting-ip / x-forwarded-for / traceparent / baggage when
+  // they're actually present (e.g. behind a real Cloudflare or other reverse proxy)
+  // and otherwise they're simply absent — no synthesised Cloudflare values.
   await proxyRequest(req, res, {
     target,
-    headers,
     timeout: 120_000,
     onError: error => {
       console.error("PROVIDER_PROXY_REQUEST_ERROR", error);
