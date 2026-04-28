@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Readable, Writable } from "node:stream";
+import { Writable } from "node:stream";
 
 const HEADERS_TO_SKIP = new Set([
   "connection",
@@ -74,14 +74,28 @@ async function forwardRequestStream(req: NextApiRequest, res: NextApiResponse, o
   const method = req.method?.toUpperCase() || "GET";
   const contentLength = Number(req.headers["content-length"]) || 0;
   const hasBody = method !== "GET" && method !== "HEAD" && (contentLength > 0 || req.headers["transfer-encoding"]);
-  const body = hasBody ? Readable.toWeb(req) : undefined;
+
+  // We buffer the request body before forwarding instead of piping the Node stream
+  // through Readable.toWeb + duplex:"half". The streaming variant is flaky inside
+  // Next API routes — Next can close the underlying socket before undici finishes
+  // forwarding, which surfaces as ERR_STREAM_PREMATURE_CLOSE here and as a
+  // truncated body / 503 at the upstream. The /api/proxy and /api/provider-proxy
+  // routes only carry small JSON payloads, so buffering is fine in practice.
+  let body: Buffer | undefined;
+  if (hasBody) {
+    const chunks: Buffer[] = [];
+    for await (const chunk of req) {
+      chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : (chunk as Buffer));
+    }
+    body = Buffer.concat(chunks);
+    headers.set("content-length", String(body.byteLength));
+  }
 
   const fetch = options.fetch ?? globalThis.fetch;
   const response = await fetch(options.target, {
     method: req.method,
     headers,
     body,
-    duplex: body ? "half" : undefined,
     signal: options.signal
   } as any); // TODO: fetch API typings are mixed between envs, here we should have nodejs specific only
 
