@@ -3,7 +3,7 @@ version: "2.0"
 
 services:
   web:
-    image: redm4x/console-deploy:<version>
+    image: <docker-hub-user>/console-deploy:<version>
     env:
       - MAINTENANCE_MODE=false
     expose:
