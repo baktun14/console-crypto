@@ -1,11 +1,10 @@
 "use client";
-import React, { useMemo } from "react";
+import React from "react";
 import { FormattedNumber } from "react-intl";
 import { Card, CardContent, CardHeader } from "@akashnetwork/ui/components";
 import { Server, StatsUpSquare, Wallet } from "iconoir-react";
 
 import { usePricing } from "@src/hooks/usePricing/usePricing";
-import { useSupportsACT } from "@src/hooks/useSupportsACT/useSupportsACT";
 import type { WalletBalance } from "@src/hooks/useWalletBalance";
 import { udenomToDenom } from "@src/utils/mathHelpers";
 
@@ -17,8 +16,7 @@ export const DEPENDENCIES = {
   StatsUpSquare,
   Wallet,
   FormattedNumber,
-  usePricing,
-  useSupportsACT
+  usePricing
 };
 
 type Props = {
@@ -37,27 +35,16 @@ export const AccountStatsCards: React.FC<Props> = ({
   dependencies: d = DEPENDENCIES
 }) => {
   const { price } = d.usePricing();
-  const isACTSupported = d.useSupportsACT();
 
   const aktBalance = udenomToDenom(walletBalance?.balanceUAKT || 0, 2);
   const aktBalanceUsd = aktBalance * (price || 0);
   const aktInDeployments = udenomToDenom(walletBalance?.totalDeploymentEscrowUAKT || 0, 2);
 
-  const usdBalance = useMemo(() => {
-    if (isACTSupported) {
-      return {
-        total: udenomToDenom(walletBalance?.balanceUACT || 0, 2),
-        inDeployments: udenomToDenom(walletBalance?.totalDeploymentEscrowUACT || 0, 2),
-        denom: "ACT"
-      };
-    }
-
-    return {
-      total: udenomToDenom(walletBalance?.balanceUUSDC || 0, 2),
-      inDeployments: udenomToDenom(walletBalance?.totalDeploymentEscrowUUSDC || 0, 2),
-      denom: "USDC"
-    };
-  }, [walletBalance, isACTSupported]);
+  const usdBalance = {
+    total: udenomToDenom(walletBalance?.balanceUACT || 0, 2),
+    inDeployments: udenomToDenom(walletBalance?.totalDeploymentEscrowUACT || 0, 2),
+    denom: "ACT"
+  };
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

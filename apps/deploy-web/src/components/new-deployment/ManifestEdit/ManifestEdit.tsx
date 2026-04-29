@@ -12,14 +12,13 @@ import { ArrowRight, InfoCircle, Upload } from "iconoir-react";
 import { useAtom } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { UACT_DENOM, UAKT_DENOM } from "@src/config/denom.config";
+import { UACT_DENOM } from "@src/config/denom.config";
 import { LOG_COLLECTOR_IMAGE } from "@src/config/log-collector.config";
 import { useSdlBuilder } from "@src/context/SdlBuilderProvider/SdlBuilderProvider";
 import { useServices } from "@src/context/ServicesProvider";
 import { useWallet } from "@src/context/WalletProvider";
 import { useCertificate } from "@src/hooks/useCertificate/useCertificate";
 import { useImportSimpleSdl } from "@src/hooks/useImportSimpleSdl";
-import { useSupportsACT } from "@src/hooks/useSupportsACT/useSupportsACT";
 import { useDepositParams } from "@src/queries/useSaveSettings";
 import sdlStore from "@src/store/sdlStore";
 import type { TemplateCreation } from "@src/types";
@@ -73,7 +72,6 @@ export const DEPENDENCIES = {
   useMediaQuery,
   useRouter,
   useSearchParams,
-  useSupportsACT,
   useSelectedChain
 };
 
@@ -90,16 +88,14 @@ export const ManifestEdit: React.FunctionComponent<Props> = ({
   const [isCreatingDeployment, setIsCreatingDeployment] = useState(false);
   const [isDepositingDeployment, setIsDepositingDeployment] = useState(false);
   const [selectedSdlEditMode, setSelectedSdlEditMode] = useAtom(sdlStore.selectedSdlEditMode);
-  const isACTSupported = d.useSupportsACT();
   const sdlDenom = useMemo(() => {
-    const defaultValue = isACTSupported ? UACT_DENOM : UAKT_DENOM;
-    if (!editedManifest) return defaultValue;
+    if (!editedManifest) return UACT_DENOM;
 
     try {
       const sdl: SDLInput = yaml.raw(editedManifest);
       return Object.values(Object.values(sdl.profiles.placement)[0].pricing)[0].denom;
     } catch {
-      return defaultValue;
+      return UACT_DENOM;
     }
   }, [editedManifest]);
 

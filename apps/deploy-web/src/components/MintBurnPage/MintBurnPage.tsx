@@ -10,7 +10,6 @@ import { useSnackbar } from "notistack";
 import { UAKT_DENOM } from "@src/config/denom.config";
 import { useWallet } from "@src/context/WalletProvider";
 import { usePricing } from "@src/hooks/usePricing/usePricing";
-import { useSupportsACT } from "@src/hooks/useSupportsACT/useSupportsACT";
 import { useWalletBalance } from "@src/hooks/useWalletBalance";
 import { useBmeParams } from "@src/queries/useBmeQuery";
 import { useLedgerRecords } from "@src/queries/useLedgerRecords";
@@ -46,7 +45,6 @@ export const DEPENDENCIES = {
   usePricing,
   useWalletBalance,
   useSnackbar,
-  useSupportsACT,
   useBmeParams,
   useLedgerRecords,
   LedgerRecordsTable
@@ -66,7 +64,6 @@ export const MintBurnPage: React.FC<MintBurnPageProps> = ({ dependencies: d = DE
   const { balance, isLoading: isBalanceLoading } = d.useWalletBalance();
   const { price, isLoaded: isPriceLoaded } = d.usePricing();
   const { enqueueSnackbar } = d.useSnackbar();
-  const isACTSupported = d.useSupportsACT();
   const { data: bmeParams } = d.useBmeParams();
   const { data: ledgerData, isLoading: isLedgerLoading, invalidate: invalidateLedger } = d.useLedgerRecords(address);
 
@@ -171,10 +168,6 @@ export const MintBurnPage: React.FC<MintBurnPageProps> = ({ dependencies: d = DE
       setIsSubmitting(false);
     }
   }, [address, effectiveFromAmount, insufficientBalance, belowMinMint, isMint, signAndBroadcastTx, enqueueSnackbar, invalidateLedger, resetForm, d]);
-
-  if (!isACTSupported) {
-    return null;
-  }
 
   return (
     <d.Layout>
