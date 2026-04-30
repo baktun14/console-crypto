@@ -143,7 +143,13 @@ export const DeploymentDetailTopBar: React.FunctionComponent<Props> = ({
           <div className="flex items-center">
             <d.DropdownMenu modal={false}>
               <d.DropdownMenuTrigger asChild>
-                <d.Button size="icon" variant="ghost" className="rounded-full" data-testid="deployment-detail-dropdown">
+                <d.Button
+                  size="icon"
+                  variant="ghost"
+                  className="rounded-full"
+                  aria-label="Deployment actions"
+                  data-testid="deployment-detail-dropdown"
+                >
                   <MoreHoriz />
                 </d.Button>
               </d.DropdownMenuTrigger>
