@@ -7,19 +7,26 @@ import { testEnvConfig } from "./test-env.config";
 
 const WALLET_PASSWORD = "12345678";
 
-export async function connectWalletViaLeap(context: BrowserContext, page: Page) {
-  if (!(await isWalletConnected(page))) {
-    await page.getByRole("button", { name: /connect wallet/i }).click({ timeout: 30_000 });
-    const popupPagePromise = context.waitForEvent("page").catch(() => null);
+export async function connectWalletViaKeplr(context: BrowserContext, page: Page) {
+  if (await isWalletConnected(page)) return;
 
-    await page.getByRole("button", { name: "Leap Leap" }).click();
-    const popupPage = await Promise.race([popupPagePromise, isWalletConnected(page).then(() => null)]);
+  await page.getByRole("button", { name: /connect wallet/i }).first().click({ timeout: 30_000 });
 
-    if (popupPage) {
-      await connectOrUnlockWallet(popupPage);
-      await isWalletConnected(page);
-    }
+  const popupPagePromise = context.waitForEvent("page").catch(() => null);
+  const keplrButton = page.getByRole("button", { name: "Keplr Keplr" });
+
+  // The wallet picker normally opens after Connect Wallet — click Keplr to
+  // pick the injected window.keplr mock. If cosmos-kit auto-dismisses before
+  // we get there, the click times out and we fall through.
+  await keplrButton.click({ timeout: 30_000 }).catch(() => null);
+
+  const popupPage = await Promise.race([popupPagePromise, page.getByLabel("Connected wallet name and balance").waitFor({ state: "visible" }).then(() => null)]);
+
+  if (popupPage) {
+    await connectOrUnlockWallet(popupPage);
   }
+
+  await isWalletConnected(page);
 }
 
 async function connectOrUnlockWallet(popupPage: Page) {
