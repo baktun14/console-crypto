@@ -7,26 +7,17 @@ import { testEnvConfig } from "./test-env.config";
 
 const WALLET_PASSWORD = "12345678";
 
-export async function connectWalletViaKeplr(context: BrowserContext, page: Page) {
+export async function connectWalletViaKeplr(_context: BrowserContext, page: Page) {
   if (await isWalletConnected(page)) return;
 
   await page.getByRole("button", { name: /connect wallet/i }).first().click({ timeout: 30_000 });
 
-  const popupPagePromise = context.waitForEvent("page").catch(() => null);
-  const keplrButton = page.getByRole("button", { name: "Keplr Keplr" });
-
-  // The wallet picker normally opens after Connect Wallet — click Keplr to
-  // pick the injected window.keplr mock. If cosmos-kit auto-dismisses before
-  // we get there, the click times out and we fall through.
-  await keplrButton.click({ timeout: 30_000 }).catch(() => null);
-
-  const popupPage = await Promise.race([popupPagePromise, page.getByLabel("Connected wallet name and balance").waitFor({ state: "visible" }).then(() => null)]);
-
-  if (popupPage) {
-    await connectOrUnlockWallet(popupPage);
-  }
-
-  await isWalletConnected(page);
+  // The injected Keplr mock satisfies the cosmos-kit proxy protocol entirely
+  // in-page, so no popup ever opens — skip the legacy context.waitForEvent
+  // path that the real-extension flow needed and just wait for the connected
+  // wallet UI to render.
+  await page.getByRole("button", { name: "Keplr Keplr" }).click({ timeout: 30_000 }).catch(() => null);
+  await page.getByLabel("Connected wallet name and balance").waitFor({ state: "visible", timeout: 30_000 });
 }
 
 async function connectOrUnlockWallet(popupPage: Page) {
