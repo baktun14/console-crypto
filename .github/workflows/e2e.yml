@@ -18,6 +18,11 @@ jobs:
     timeout-minutes: 60
     env:
       NETWORK_ID: sandbox
+      # Bake the build with sandbox as the default chain so the initial settings
+      # bootstrap doesn't try to reach the dozen mainnet RPCs (some of which time
+      # out from GitHub-hosted runners and leave the page stuck on
+      # "Loading settings..." past every test's 5s visibility timeout).
+      NEXT_PUBLIC_DEFAULT_NETWORK_ID: sandbox
       BASE_URL: http://127.0.0.1:3000
       TEST_WALLET_MNEMONIC: ${{ secrets.TEST_WALLET_MNEMONIC }}
       E2E_TESTING_CLIENT_TOKEN: console-crypto-e2e
