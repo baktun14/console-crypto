@@ -17,7 +17,6 @@ import { useProviderCredentials } from "@src/hooks/useProviderCredentials/usePro
 import { useDeploymentDetail } from "@src/queries/useDeploymentQuery";
 import { useDeploymentLeaseList } from "@src/queries/useLeaseQuery";
 import { useProviderList } from "@src/queries/useProvidersQuery";
-import { extractRepositoryUrl } from "@src/services/remote-deploy/env-var-manager.service";
 import { RouteStep } from "@src/types/route-steps.type";
 import { UrlService } from "@src/utils/urlUtils";
 import Layout from "../layout/Layout";
@@ -37,7 +36,7 @@ export interface DeploymentDetailProps {
 type Tab = "EVENTS" | "LOGS" | "SHELL" | "EDIT" | "LEASES";
 
 export const DeploymentDetail: FC<DeploymentDetailProps> = ({ dseq }) => {
-  const { analyticsService, deploymentLocalStorage, sdlAnalyzer } = useServices();
+  const { analyticsService, deploymentLocalStorage } = useServices();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<Tab>("LEASES");
@@ -47,8 +46,6 @@ export const DeploymentDetail: FC<DeploymentDetailProps> = ({ dseq }) => {
   const { isSettingsInit } = useSettings();
   const [leaseRefs, setLeaseRefs] = useState<Array<any>>([]);
   const [deploymentManifest, setDeploymentManifest] = useState<string | null>(null);
-  const isRemoteDeploy = sdlAnalyzer.hasCiCdImage(editedManifest);
-  const repo: string | null = isRemoteDeploy ? extractRepositoryUrl(editedManifest) : null;
 
   const { data: deployment, isFetching: isLoadingDeployment, refetch: getDeploymentDetail, error: deploymentError } = useDeploymentDetail(address, dseq);
   const {
@@ -226,7 +223,6 @@ export const DeploymentDetail: FC<DeploymentDetailProps> = ({ dseq }) => {
               <ManifestUpdate
                 editedManifest={editedManifest as string}
                 onManifestChange={setEditedManifest}
-                isRemoteDeploy={isRemoteDeploy}
                 deployment={deployment}
                 leases={leases}
                 closeManifestEditor={() => {
@@ -245,7 +241,6 @@ export const DeploymentDetail: FC<DeploymentDetailProps> = ({ dseq }) => {
                 {leases &&
                   leases.map((lease, i) => (
                     <LeaseRow
-                      repo={repo}
                       key={lease.id}
                       index={i}
                       lease={lease}
@@ -254,7 +249,6 @@ export const DeploymentDetail: FC<DeploymentDetailProps> = ({ dseq }) => {
                       dseq={dseq}
                       providers={providers || []}
                       loadDeploymentDetail={loadDeploymentDetail}
-                      isRemoteDeploy={isRemoteDeploy}
                     />
                   ))}
 

@@ -8,15 +8,6 @@ export type NewDeploymentParams = {
   redeploy?: string | number;
   templateId?: string;
   page?: "new-deployment" | "deploy-linux";
-  gitProvider?: string;
-  gitProviderCode?: string | null;
-  repoUrl?: string;
-  branch?: string;
-  buildCommand?: string;
-  startCommand?: string;
-  installCommand?: string;
-  buildDirectory?: string;
-  nodeVersion?: string;
 };
 
 export const domainName = browserEnvConfig.NEXT_PUBLIC_APP_URL;
@@ -59,23 +50,9 @@ export class UrlService {
   static settings = () => "/settings";
 
   static newDeployment = (params: NewDeploymentParams = {}) => {
-    const {
-      step,
-      dseq,
-      redeploy,
-      templateId,
-      gitProviderCode,
-      gitProvider,
-      repoUrl,
-      branch,
-      buildCommand,
-      startCommand,
-      installCommand,
-      buildDirectory,
-      nodeVersion
-    } = params;
+    const { step, dseq, redeploy, templateId } = params;
     const page = params.page || "new-deployment";
-    return `/${page}${appendSearchParams({ dseq, step, templateId, redeploy, gitProvider, code: gitProviderCode, repoUrl, branch, buildCommand, startCommand, installCommand, buildDirectory, nodeVersion })}`;
+    return `/${page}${appendSearchParams({ dseq, step, templateId, redeploy })}`;
   };
 }
 

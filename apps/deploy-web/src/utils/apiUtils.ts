@@ -1,6 +1,5 @@
 import type { AxiosInstance } from "axios";
 
-import { services } from "@src/services/app-di-container/browser-di-container";
 import networkStore from "@src/store/networkStore";
 import { appendSearchParams } from "./urlUtils";
 
@@ -130,7 +129,11 @@ export class ApiUrlService {
   }
 
   static get baseApiUrl() {
-    return services.apiUrlService.getBaseApiUrlFor(networkStore.selectedNetworkId);
+    // Console API (/v1/*) requests go through the Next /api/proxy/{network} route
+    // so the browser only ever talks to its own origin. The proxy forwards
+    // server-side to the per-network upstream derived from NEXT_PUBLIC_API_BASE_URL
+    // (mainnet → console-api.akash.network, sandbox → console-api-sandbox.akash.network).
+    return `/api/proxy/${networkStore.selectedNetworkId}`;
   }
 }
 

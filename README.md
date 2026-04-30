@@ -17,15 +17,15 @@ npm install
 
 ## Environment
 
-Env files live under [apps/deploy-web/env/](apps/deploy-web/env/) and are gitignored. Create your local file from the sample:
+Console Air ships with production defaults pointing at the Akash hosted Console infrastructure (`console-api.akash.network`, `stats.akash.network`, the public chain REST endpoints, etc.) — **no env config is required to run the app**.
+
+If you want to point an instance at your own Console API, provider proxy, or chain nodes, env files live under [apps/deploy-web/env/](apps/deploy-web/env/) and are gitignored:
 
 ```bash
-cp apps/deploy-web/env/.env.sample apps/deploy-web/env/.env
-# and/or an overrides file
 cp apps/deploy-web/env/.env.sample apps/deploy-web/env/.env.local
 ```
 
-Fill in the values. The sample lists every variable — secrets (API keys, client secrets, tokens) must be provided by whoever operates your instance; do not commit them.
+Every variable in the sample is optional and documents its production default; uncomment only the ones you need to override.
 
 ## Run
 
