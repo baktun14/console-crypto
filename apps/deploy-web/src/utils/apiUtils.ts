@@ -129,10 +129,11 @@ export class ApiUrlService {
   }
 
   static get baseApiUrl() {
-    // Console API (/v1/*) requests go through the Next /api/proxy route so the
-    // browser only ever talks to its own origin. The proxy forwards server-side
-    // to NEXT_PUBLIC_API_BASE_URL (defaults to https://console-api.akash.network).
-    return "/api/proxy";
+    // Console API (/v1/*) requests go through the Next /api/proxy/{network} route
+    // so the browser only ever talks to its own origin. The proxy forwards
+    // server-side to the per-network upstream derived from NEXT_PUBLIC_API_BASE_URL
+    // (mainnet → console-api.akash.network, sandbox → console-api-sandbox.akash.network).
+    return `/api/proxy/${networkStore.selectedNetworkId}`;
   }
 }
 

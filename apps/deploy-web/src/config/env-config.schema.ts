@@ -21,6 +21,8 @@ export const browserEnvSchema = z.object({
   NEXT_PUBLIC_DEFAULT_NETWORK_ID: networkId.optional().default("mainnet"),
   NEXT_PUBLIC_APP_URL: productionUrl("http://localhost:3000"),
   NEXT_PUBLIC_API_BASE_URL: productionUrl("https://console-api.akash.network"),
+  NEXT_PUBLIC_API_BASE_URL_SANDBOX: productionUrl("https://console-api-sandbox.akash.network"),
+  NEXT_PUBLIC_API_BASE_URL_TESTNET: productionUrl("https://console-api-testnet.akash.network"),
   NEXT_PUBLIC_STATS_APP_URL: productionUrl("https://stats.akash.network"),
   NEXT_PUBLIC_PROVIDER_PROXY_URL: productionUrl("https://console.akash.network/provider-proxy-%{NETWORK}"),
   NEXT_PUBLIC_NODE_ENV: z.enum(["development", "production", "test"]).optional().default("development"),
