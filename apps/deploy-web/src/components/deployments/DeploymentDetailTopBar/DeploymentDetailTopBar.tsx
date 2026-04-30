@@ -180,6 +180,7 @@ export const DeploymentDetailTopBar: React.FunctionComponent<Props> = ({
                     analyticsService.track("close_deployment_btn_clk", "Amplitude");
                   }}
                   icon={<XmarkSquare fontSize="small" />}
+                  aria-label="Close deployment"
                   data-testid="deployment-detail-close-button"
                 >
                   Close
