@@ -1,30 +1,33 @@
 import type { NetworkId } from "@akashnetwork/chain-sdk";
 import type { Page } from "@playwright/test";
 
-import { isWalletConnected } from "../uiState/isWalletConnected";
+// Test-fixture NetworkId values map to the internal store ids defined in
+// packages/net netConfigData. Going through the UI (App Settings → Select
+// Network → Save) requires the wallet to stay connected through the route
+// transition; cosmos-kit's auto-reconnect briefly flips isWalletConnected on
+// nav, which trips the SettingsContainer route guard and bounces back to "/".
+// Switching the network by writing the store key directly avoids all of that.
+const STORAGE_KEY = "selectedNetworkId";
+const STORE_NETWORK_ID: Record<NetworkId, string> = {
+  mainnet: "mainnet",
+  sandbox: "sandbox-2",
+  testnet: "testnet"
+};
 
 export async function selectChainNetwork(page: Page, networkId: NetworkId = "sandbox") {
-  await page.getByRole("link", { name: "App Settings" }).click();
-  const selectNetworkButton = page.getByLabel("Select Network");
-  const selectedNetwork = await selectNetworkButton.locator("xpath=..").textContent();
-  if (selectedNetwork?.toLowerCase().includes(networkId)) return;
+  const target = STORE_NETWORK_ID[networkId] ?? networkId;
+  const current = await page.evaluate(key => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
+  }, STORAGE_KEY);
 
-  await selectNetworkButton.click({ timeout: 20_000 });
+  if (current === target) return;
 
-  const networkRadioLocator = page.getByLabel(new RegExp(networkId, "i"));
-  await networkRadioLocator.click();
-  const popupPromise = page
-    .context()
-    .waitForEvent("page", { timeout: 5_000 })
-    .catch(() => null);
-  await page.getByRole("button", { name: "Save" }).click();
-
-  const popupPage = await Promise.race([
-    popupPromise,
-    isWalletConnected(page).then(
-      () => null,
-      () => null
-    )
-  ]);
-  await popupPage?.getByRole("button", { name: /Approve/i }).click();
+  await page.evaluate(([key, value]) => localStorage.setItem(key, JSON.stringify(value)), [STORAGE_KEY, target] as const);
+  await page.reload({ waitUntil: "networkidle" });
 }
