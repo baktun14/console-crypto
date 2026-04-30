@@ -22,5 +22,11 @@ test("ssh keys generation", async ({ page, context }) => {
 
   await page.getByRole("button", { name: /create deployment/i }).click();
 
-  await expect(page.getByRole("button", { name: /connect wallet/i }).first()).toBeVisible();
+  // Self-custody build prompts via the cosmos-kit wallet picker dialog instead
+  // of revealing a bare "Connect Wallet" button. Either signal counts as "user
+  // is being prompted to connect"; the dialog version makes the legacy button
+  // aria-hidden, so getByRole alone misses it.
+  await expect(
+    page.getByRole("dialog", { name: /select your wallet/i }).or(page.getByRole("button", { name: /connect wallet/i }).first())
+  ).toBeVisible();
 });
