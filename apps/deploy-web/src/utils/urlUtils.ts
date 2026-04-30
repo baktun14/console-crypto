@@ -37,6 +37,9 @@ export class UrlService {
   static template = (id: string) => `/template/${id}`;
   static mintBurn = () => "/mint-burn";
 
+  static getStarted = () => "/get-started";
+  static getStartedWallet = (section?: string) => `/get-started/wallet${appendSearchParams({ section })}`;
+
   // Deploy
   static deploymentList = () => `/deployments`;
   static deploymentDetails = (dseq: string, tab?: string, logsMode?: string) => `/deployments/${dseq}${appendSearchParams({ tab, logsMode })}`;

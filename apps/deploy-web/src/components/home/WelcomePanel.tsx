@@ -34,7 +34,7 @@ export const WelcomePanel: React.FC = () => {
                 </Avatar>
 
                 <div className="flex flex-col">
-                  <Link href="https://akash.network/docs/getting-started/quickstart-guides/akash-console/" className="font-semibold">
+                  <Link href={urlService.getStarted()} className="font-semibold">
                     Getting started with Console Air
                   </Link>
                   <span className="text-sm text-muted-foreground">Learn how to deploy your first docker container on Akash in a few clicks using Console Air.</span>
