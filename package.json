@@ -26,7 +26,8 @@
   },
   "overrides": {
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "vitest": "4.0.18"
   },
   "packageManager": "npm@11.11.0",
   "engines": {
