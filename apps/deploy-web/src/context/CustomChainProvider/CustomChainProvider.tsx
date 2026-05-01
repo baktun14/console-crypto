@@ -9,7 +9,6 @@ import type { ChainContext, WalletModalProps } from "@cosmos-kit/core";
 import { wallets as metamask } from "@cosmos-kit/cosmos-extension-metamask";
 import { wallets as cosmostation } from "@cosmos-kit/cosmostation-extension";
 import { wallets as keplr } from "@cosmos-kit/keplr";
-
 import { ChainProvider, DefaultModal, useChain } from "@cosmos-kit/react";
 import { useAtom } from "jotai";
 import { useSnackbar } from "notistack";
@@ -18,6 +17,7 @@ import { assetLists, chains } from "@src/chains";
 import networkStore from "@src/store/networkStore";
 import walletStore from "@src/store/walletStore";
 import { registry } from "@src/utils/customRegistry";
+import { COSMOS_KIT_CURRENT_WALLET_KEY } from "./cosmosKitStorage";
 
 type Props = {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export function CustomChainProvider({ children }: Props) {
         duration: 31_556_926_000, // 1 year
         callback: () => {
           console.log("session expired");
-          window.localStorage.removeItem("cosmos-kit@2:core//current-wallet");
+          window.localStorage.removeItem(COSMOS_KIT_CURRENT_WALLET_KEY);
           window.location.reload();
         }
       }}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@akashnetwork/ui/components";
 import { Edit } from "iconoir-react";
 import { useRouter } from "next/navigation";
@@ -8,9 +8,9 @@ import { NextSeo } from "next-seo";
 import { LocalDataManager } from "@src/components/settings/LocalDataManager";
 import { Fieldset } from "@src/components/shared/Fieldset";
 import { LabelValue } from "@src/components/shared/LabelValue";
+import { hasPersistedCosmosKitWallet } from "@src/context/CustomChainProvider/cosmosKitStorage";
 import { useSettings } from "@src/context/SettingsProvider";
 import { useWallet } from "@src/context/WalletProvider";
-import { useWhen } from "@src/hooks/useWhen";
 import networkStore from "@src/store/networkStore";
 import Layout from "../layout/Layout";
 import { CertificateList } from "./CertificateList";
@@ -22,10 +22,20 @@ import { SettingsLayout, SettingsTabs } from "./SettingsLayout";
 export const SettingsContainer: React.FunctionComponent = () => {
   const { settings } = useSettings();
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+  const [hasObservedWalletActivity, setHasObservedWalletActivity] = useState(false);
   const selectedNetwork = networkStore.useSelectedNetwork();
   const wallet = useWallet();
   const router = useRouter();
-  useWhen(!wallet.isWalletConnected, () => router.push("/"));
+
+  useEffect(() => {
+    if (wallet.isWalletLoading || wallet.isWalletConnected) {
+      setHasObservedWalletActivity(true);
+      return;
+    }
+    if (hasObservedWalletActivity || !hasPersistedCosmosKitWallet()) {
+      router.push("/");
+    }
+  }, [wallet.isWalletLoading, wallet.isWalletConnected, hasObservedWalletActivity, router]);
 
   const onSelectNetworkModalClose = () => {
     setIsSelectingNetwork(false);
