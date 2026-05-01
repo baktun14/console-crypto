@@ -140,7 +140,7 @@
     "@types/react-simple-maps": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/coverage-v8": "^4.0.0",
+    "@vitest/coverage-v8": "4.0.18",
     "autoprefixer": "^10.4.16",
     "copy-webpack-plugin": "^13.0.1",
     "eslint": "^8.57.0",
