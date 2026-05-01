@@ -22,7 +22,7 @@ import { useServices } from "../ServicesProvider";
 import { useSettings } from "../SettingsProvider";
 import { settingsIdAtom } from "../SettingsProvider/settingsStore";
 
-const CONSOLE_MEMO = "akash console";
+const CONSOLE_MEMO = "console air";
 
 const ERROR_MESSAGES = {
   5: "Insufficient funds",
