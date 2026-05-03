@@ -1,7 +1,7 @@
-/.github/ @akash-network/console
-.codecov.yml @akash-network/console
-/apps/*/src/ @akash-network/console
-/packages/*/src/ @akash-network/console
+/.github/ @akash-network/console-air
+.codecov.yml @akash-network/console-air
+/apps/*/src/ @akash-network/console-air
+/packages/*/src/ @akash-network/console-air
 
 # Exclude test files from code ownership
 *.spec.ts
