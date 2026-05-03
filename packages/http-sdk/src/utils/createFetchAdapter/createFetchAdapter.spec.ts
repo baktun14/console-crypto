@@ -103,7 +103,7 @@ describe(createFetchAdapter.name, () => {
       ]);
 
       expect(adapter).toHaveBeenCalledTimes(1);
-      expect(result.status).toEqual(400);
+      expect(result.response?.status).toEqual(400);
     });
 
     it("respects numeric retry-after header", async () => {

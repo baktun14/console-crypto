@@ -135,6 +135,7 @@ export const TemplateList: React.FunctionComponent<Props> = ({ onTemplateSelecte
                 href={UrlService.newDeployment({ step: RouteStep.editDeployment, templateId: helloWorldTemplate.code })}
                 className="text-inherit underline"
                 prefetch={false}
+                aria-label="Hello World"
                 data-testid="hello-world-card"
               >
                 Try hello world app!

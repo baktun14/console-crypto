@@ -6,13 +6,11 @@ import { defineConfig } from "vitest/config";
 
 const commonAlias: Record<string, string> = {
   "@src": path.resolve("./src"),
-  "@tests": path.resolve("./tests"),
-  // see ./src/lib/auth0/setSession/setSession.ts for more details
-  "@auth0/nextjs-auth0/session": path.join(require.resolve("@auth0/nextjs-auth0"), "..", "session", "index.js"),
-  "@auth0/nextjs-auth0/update-session": path.join(require.resolve("@auth0/nextjs-auth0"), "..", "session", "update-session.js")
+  "@tests": path.resolve("./tests")
 };
 
 export default defineConfig({
+  plugins: [react()],
   test: {
     outputFile: {
       junit: "junit.xml"
@@ -25,13 +23,12 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        plugins: [react()],
         test: {
           name: "unit",
           environment: "jsdom",
           isolate: false,
           include: ["src/**/*.spec.{tsx,ts}"],
-          exclude: ["**/node_modules/**", "src/lib/nextjs/**", "src/lib/auth0/**"],
+          exclude: ["**/node_modules/**", "src/lib/nextjs/**"],
           setupFiles: ["tests/unit/setup.ts"]
         },
         resolve: {
@@ -50,7 +47,7 @@ export default defineConfig({
         test: {
           name: "unit-node",
           environment: "node",
-          include: ["src/lib/{nextjs,auth0}/**/*.spec.{tsx,ts}"],
+          include: ["src/lib/nextjs/**/*.spec.{tsx,ts}"],
           setupFiles: ["src/lib/nextjs/setup-node-tests.ts"]
         },
         resolve: {

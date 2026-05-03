@@ -39,6 +39,7 @@ apps/deploy-web/public/sdl-schema.yaml
 .env.local.*
 !.env.example
 !apps/deploy-web/env/.env.sample
+!apps/deploy-web/env/.env.test.sample
 
 # IDE
 .idea
@@ -48,6 +49,7 @@ apps/deploy-web/public/sdl-schema.yaml
 data
 testdata
 test-results
+playwright-report
 
 # OS
 .DS_Store
@@ -57,3 +59,4 @@ test-results
 
 # Claude
 .claude/settings.local.json
+.claude/scheduled_tasks.lock

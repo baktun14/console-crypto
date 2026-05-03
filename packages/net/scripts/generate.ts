@@ -22,7 +22,8 @@ const metaSchema = z.object({
   apis: z.object({
     rest: z.array(apiSchema),
     rpc: z.array(apiSchema)
-  })
+  }),
+  faucets: z.array(z.object({ url: z.string() })).optional()
 });
 
 main().catch(console.error);
@@ -32,23 +33,20 @@ async function main() {
   const config: Record<string, unknown> = {};
   for (const network of networks) {
     const baseConfigUrl = `${AKASH_NET_BASE}/${network}`;
-    const [meta, faucetUrl] = await Promise.all([
-      fetchJson(`${baseConfigUrl}/meta.json`)
-        .then(res => metaSchema.parse(res))
-        .catch(error => {
-          if (error instanceof ZodError) {
-            console.log("meta.json is invalid", error);
-          }
+    const meta = await fetchJson(`${baseConfigUrl}/meta.json`)
+      .then(res => metaSchema.parse(res))
+      .catch(error => {
+        if (error instanceof ZodError) {
+          console.log("meta.json is invalid", error);
+        }
 
-          return null;
-        }),
-      fetchText(`${baseConfigUrl}/faucet-url.txt`).catch(() => null)
-    ]);
+        return null;
+      });
     const appVersion = meta?.apis?.rpc?.[0]?.address ? await getAppVersion(meta?.apis?.rpc[0]?.address) : null;
 
     const networkConfig = {
       version: appVersion ?? meta?.codebase?.recommended_version ?? null,
-      faucetUrl: faucetUrl?.trim() ?? null,
+      faucetUrl: meta?.faucets?.[0]?.url?.trim() ?? null,
       apiUrls: meta?.apis?.rest?.map(({ address }) => address) ?? [],
       rpcUrls: meta?.apis?.rpc?.map(({ address }) => address) ?? []
     };
@@ -62,15 +60,6 @@ async function main() {
   await fsp.writeFile(joinPath(OUT_DIR, "netConfigData.ts"), `export const netConfigData = ${JSON.stringify(config, null, 2)}`);
 
   console.log(`Network configuration was written to ${OUT_DIR.replace(PROJECT_DIR, ".")}/net-config.ts`);
-}
-
-function fetchText(url: string): Promise<string> {
-  return fetch(url).then(res => {
-    if (!res.ok) {
-      throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
-    }
-    return res.text();
-  });
 }
 
 function fetchJson<T>(url: string): Promise<T> {

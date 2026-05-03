@@ -226,7 +226,11 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
                               <FormItem className="w-full">
                                 <div className="flex flex-grow flex-col">
                                   <Select value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger className={cn("ml-1", { "ring-2 ring-destructive": !!fieldState.error })} data-testid="ssh-image-select">
+                                    <SelectTrigger
+                                      className={cn("ml-1", { "ring-2 ring-destructive": !!fieldState.error })}
+                                      aria-label="OS image"
+                                      data-testid="ssh-image-select"
+                                    >
                                       <Image alt="Docker Logo" src="/images/docker.png" layout="fixed" quality={100} width={24} height={18} priority />
                                       <div className="flex-1 pl-2 text-left">
                                         <SelectValue placeholder="Select image" />
