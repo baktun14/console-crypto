@@ -8,8 +8,6 @@ export * from "./deploymentBid";
 export * from "./localWallet";
 export * from "./managedWallet";
 export * from "./manifest";
-export * from "./notificationChannel";
-export * from "./payment";
 export * from "./provider";
 export * from "./usage";
 export * from "./user";
